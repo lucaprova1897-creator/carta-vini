@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Lou Tchappé · Carta dei Vini</title>
+  <meta name="description" content="Lou Tchappé, Cogne — Scopri la nostra carta dei vini di montagna.">
+
+  <!-- Tipografia: Fraunces (display, calda e artigianale) + Inter (testo, leggibilità mobile) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Sfondo a effetto pergamena/legno: generato via CSS, vedi style.css -->
+  <div class="texture-overlay" aria-hidden="true"></div>
+
+  <main class="page">
+
+    <!-- LOGO -->
+    <header class="brand" data-animate="fade-down">
+      <img
+        src="assets/logo.png"
+        alt="Lou Tchappé"
+        class="brand__logo"
+        width="140"
+        height="140"
+      >
+    </header>
+
+    <!-- COPERTINA CARTA VINI -->
+    <section class="cover" data-animate="fade-up">
+      <div class="cover__frame">
+        <img
+          src="assets/copertina.png"
+          alt="Copertina della carta dei vini Lou Tchappé"
+          class="cover__image"
+          width="480"
+          height="640"
+          loading="eager"
+        >
+      </div>
+    </section>
+
+    <!-- TESTO INTRODUTTIVO -->
+    <section class="intro" data-animate="fade-up">
+      <p class="intro__text">
+        Ogni bottiglia racconta una storia di terra, di clima e di uomini.
+        Questa carta dei vini è un invito a scoprire i sapori che accompagnano
+        la nostra cucina e la nostra montagna.
+      </p>
+    </section>
+
+    <!-- PULSANTE PRINCIPALE — apre il PDF -->
+    <section class="cta" data-animate="fade-up">
+      
+        href="CartaVini.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="cta__button"
+        id="open-wine-list"
+      >
+        <span class="cta__icon" aria-hidden="true">🍷</span>
+        <span class="cta__label">Consulta la carta dei vini</span>
+      </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer" data-animate="fade-up">
+      <p class="site-footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne</p>
+    </footer>
+
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
