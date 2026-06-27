@@ -1,0 +1,371 @@
+/* =========================================================
+   LOU TCHAPPÉ — Carta dei Vini
+   Design system: chalet di montagna, raffinato, minimale
+   ========================================================= */
+
+:root {
+  /* --- Palette --- */
+  --color-ivory:        #F7F2E9; /* fondo principale, avorio caldo */
+  --color-ivory-deep:    #EFE7D8; /* sfumatura/texture sul fondo */
+  --color-bordeaux:      #6E1423; /* primario: pulsante, accenti forti */
+  --color-bordeaux-light:#8C2F39; /* hover/stati attivi */
+  --color-wood:          #3A2A1E; /* testo principale, "legno scuro" */
+  --color-wood-soft:     #6B5848; /* testo secondario */
+  --color-gold:          #C9A66B; /* linee decorative, dettagli oro/legno chiaro */
+  --color-paper:         #FFFFFF; /* cornice copertina */
+
+  /* --- Tipografia --- */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* --- Spaziatura (scala 8px) --- */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 6rem;
+
+  /* --- Ombre morbide --- */
+  --shadow-soft: 0 8px 30px rgba(58, 42, 30, 0.10);
+  --shadow-deep: 0 16px 40px rgba(58, 42, 30, 0.18);
+
+  /* --- Timing animazioni --- */
+  --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* =========================================================
+   RESET DI BASE
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-wood);
+  background-color: var(--color-ivory);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Focus visibile per accessibilità da tastiera */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-bordeaux);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   TEXTURE DI SFONDO — effetto pergamena/legno
+   Generata via gradiente + grana SVG inline (nessuna immagine
+   esterna necessaria, leggerissima e infinitamente scalabile)
+   ========================================================= */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at top, var(--color-ivory) 0%, var(--color-ivory-deep) 100%);
+}
+
+.texture-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  /* Grana sottile via filtro SVG: simula la fibra della pergamena/carta */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.23  0 0 0 0 0.16  0 0 0 0 0.12  0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* Venatura sottile aggiuntiva ai lati, evoca le travi di un chalet */
+.texture-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      100deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(58, 42, 30, 0.015) 3px,
+      transparent 5px
+    );
+}
+
+/* =========================================================
+   LAYOUT PRINCIPALE
+   ========================================================= */
+
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-3) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* =========================================================
+   BRAND / LOGO
+   ========================================================= */
+
+.brand {
+  margin-bottom: var(--space-4);
+}
+
+.brand__logo {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(58, 42, 30, 0.15));
+}
+
+/* =========================================================
+   COPERTINA CARTA VINI
+   ========================================================= */
+
+.cover {
+  width: 100%;
+  margin-bottom: var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+
+.cover__frame {
+  position: relative;
+  max-width: 280px;
+  width: 100%;
+  background: var(--color-paper);
+  padding: var(--space-1);
+  border-radius: 2px;
+  box-shadow: var(--shadow-deep);
+  transition: transform 0.5s var(--ease-elegant);
+}
+
+.cover__frame::before {
+  /* Cornice oro sottile, richiama il dettaglio di un'etichetta pregiata */
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--color-gold);
+  pointer-events: none;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.cover__image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 1px;
+}
+
+/* =========================================================
+   TESTO INTRODUTTIVO
+   ========================================================= */
+
+.intro {
+  max-width: 380px;
+  margin-bottom: var(--space-5);
+}
+
+.intro__text {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--color-wood-soft);
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+/* =========================================================
+   CTA — PULSANTE PRINCIPALE
+   Trattato come un "sigillo" da etichetta di vino:
+   doppio bordo sottile, non un bottone standard.
+   ========================================================= */
+
+.cta {
+  margin-bottom: var(--space-6);
+}
+
+.cta__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+  padding: 1.1rem 2.3rem;
+  background-color: var(--color-bordeaux);
+  color: var(--color-ivory);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 4px;
+  box-shadow: var(--shadow-soft);
+  transition:
+    background-color 0.35s var(--ease-elegant),
+    transform 0.35s var(--ease-elegant),
+    box-shadow 0.35s var(--ease-elegant);
+}
+
+/* Doppio bordo "etichetta", leggermente distanziato */
+.cta__button::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(247, 242, 233, 0.45);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.cta__icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.cta__label {
+  white-space: nowrap;
+}
+
+.cta__button:hover,
+.cta__button:focus-visible {
+  background-color: var(--color-bordeaux-light);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-deep);
+}
+
+.cta__button:active {
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.site-footer__text {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-wood-soft);
+  opacity: 0.75;
+}
+
+/* =========================================================
+   ANIMAZIONI D'INGRESSO
+   Sequenza orchestrata: logo prima, poi copertina, testo,
+   pulsante e footer in cascata. Gestita in JS tramite
+   l'attributo [data-animate] + classe .is-visible.
+   ========================================================= */
+
+[data-animate] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+[data-animate="fade-down"] {
+  transform: translateY(-16px);
+  transition: opacity 0.8s var(--ease-elegant), transform 0.8s var(--ease-elegant);
+}
+
+[data-animate="fade-up"] {
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease-elegant), transform 0.8s var(--ease-elegant);
+}
+
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Rispetta le preferenze di accessibilità: niente movimento se richiesto */
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .cover__frame,
+  .cta__button {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/* Smartphone piccoli */
+@media (max-width: 360px) {
+  .page {
+    padding: var(--space-4) var(--space-2) var(--space-5);
+  }
+
+  .intro__text {
+    font-size: 1.05rem;
+  }
+
+  .cta__button {
+    padding: 1rem 1.8rem;
+    font-size: 0.98rem;
+  }
+}
+
+/* Tablet e desktop: la pagina resta una colonna centrata,
+   ma respira con più spazio attorno */
+@media (min-width: 600px) {
+  .page {
+    padding-top: var(--space-6);
+  }
+
+  .brand__logo {
+    width: 130px;
+    height: 130px;
+  }
+
+  .cover__frame {
+    max-width: 320px;
+  }
+
+  .intro__text {
+    font-size: 1.25rem;
+  }
+}
+
+/* Schermi molto bassi in orizzontale (es. smartphone ruotato):
+   riduce gli spazi verticali per evitare scroll eccessivo */
+@media (max-height: 500px) and (orientation: landscape) {
+  .page {
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+  }
+  .brand, .cover, .intro {
+    margin-bottom: var(--space-2);
+  }
+}
