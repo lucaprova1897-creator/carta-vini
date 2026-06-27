@@ -1,41 +1,35 @@
 /* =========================================================
    LOU TCHAPPÉ — Carta dei Vini
-   Design system: chalet di montagna, raffinato, minimale
+   Hero immersivo: notte di montagna, libro fisico, niente testo
    ========================================================= */
 
 :root {
-  /* --- Palette --- */
-  --color-ivory:        #F7F2E9; /* fondo principale, avorio caldo */
-  --color-ivory-deep:    #EFE7D8; /* sfumatura/texture sul fondo */
-  --color-bordeaux:      #6E1423; /* primario: pulsante, accenti forti */
-  --color-bordeaux-light:#8C2F39; /* hover/stati attivi */
-  --color-wood:          #3A2A1E; /* testo principale, "legno scuro" */
-  --color-wood-soft:     #6B5848; /* testo secondario */
-  --color-gold:          #C9A66B; /* linee decorative, dettagli oro/legno chiaro */
-  --color-paper:         #FFFFFF; /* cornice copertina */
+  /* --- Palette: notte alpina --- */
+  --night-deep:     #15100D; /* base del cielo, in alto */
+  --night-mid:      #2E1F18; /* cielo a metà altezza */
+  --night-glow:     #4A2E22; /* bagliore caldo verso l'orizzonte */
+  --mountain-far:   #20140F; /* catena lontana, più scura/desaturata */
+  --mountain-near:  #120D0A; /* catena vicina, quasi nera */
+
+  --bordeaux:        #7A1B2E;
+  --bordeaux-light:  #9C2940;
+  --gold:            #C9A66B;
+  --gold-soft:       rgba(201, 166, 107, 0.55);
+  --ivory:           #F2E9DC;
+  --ivory-dim:       rgba(242, 233, 220, 0.72);
+
+  --paper:           #EDE3D3; /* colore di base della copertina/libro */
+  --wood-shadow:     rgba(0, 0, 0, 0.55);
 
   /* --- Tipografia --- */
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* --- Spaziatura (scala 8px) --- */
-  --space-1: 0.5rem;
-  --space-2: 1rem;
-  --space-3: 1.5rem;
-  --space-4: 2.5rem;
-  --space-5: 4rem;
-  --space-6: 6rem;
-
-  /* --- Ombre morbide --- */
-  --shadow-soft: 0 8px 30px rgba(58, 42, 30, 0.10);
-  --shadow-deep: 0 16px 40px rgba(58, 42, 30, 0.18);
-
-  /* --- Timing animazioni --- */
   --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* =========================================================
-   RESET DI BASE
+   RESET
    ========================================================= */
 
 * {
@@ -44,15 +38,14 @@
   box-sizing: border-box;
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
+html, body {
+  height: 100%;
 }
 
 body {
   font-family: var(--font-body);
-  color: var(--color-wood);
-  background-color: var(--color-ivory);
-  min-height: 100vh;
+  color: var(--ivory);
+  background: var(--night-deep);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -67,200 +60,300 @@ a {
   color: inherit;
 }
 
-/* Focus visibile per accessibilità da tastiera */
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--color-bordeaux);
+a:focus-visible {
+  outline: 2px solid var(--gold);
   outline-offset: 4px;
   border-radius: 4px;
 }
 
 /* =========================================================
-   TEXTURE DI SFONDO — effetto pergamena/legno
-   Generata via gradiente + grana SVG inline (nessuna immagine
-   esterna necessaria, leggerissima e infinitamente scalabile)
+   HERO — schermo intero
    ========================================================= */
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background:
-    radial-gradient(ellipse at top, var(--color-ivory) 0%, var(--color-ivory-deep) 100%);
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.texture-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.5;
-  /* Grana sottile via filtro SVG: simula la fibra della pergamena/carta */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.23  0 0 0 0 0.16  0 0 0 0 0.12  0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
-}
-
-/* Venatura sottile aggiuntiva ai lati, evoca le travi di un chalet */
-.texture-overlay::after {
-  content: "";
+/* Cielo: gradiente verticale, scuro in alto, bagliore caldo all'orizzonte */
+.hero__sky {
   position: absolute;
   inset: 0;
+  z-index: 0;
   background:
-    repeating-linear-gradient(
-      100deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(58, 42, 30, 0.015) 3px,
-      transparent 5px
-    );
+    radial-gradient(ellipse 120% 60% at 50% 100%, var(--night-glow) 0%, transparent 60%),
+    linear-gradient(to bottom, var(--night-deep) 0%, var(--night-mid) 55%, var(--night-mid) 100%);
+}
+
+/* Catena montuosa lontana */
+.hero__mountains {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 42%;
+  z-index: 1;
+}
+
+.hero__mountains--far {
+  bottom: 6%;
+  opacity: 0.85;
+}
+.hero__mountains--far path {
+  fill: var(--mountain-far);
+}
+
+.hero__mountains--near {
+  bottom: 0;
+  height: 36%;
+}
+.hero__mountains--near path {
+  fill: var(--mountain-near);
+}
+
+/* Nebbia leggera che ammorbidisce la base, dove si appoggia il contenuto */
+.hero__mist {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(21, 16, 13, 0.65) 100%);
+  pointer-events: none;
+}
+
+/* Grana sottile sopra tutto, per coerenza materica con il resto del sito */
+.hero__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0.35;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* =========================================================
-   LAYOUT PRINCIPALE
+   CONTENUTO HERO
    ========================================================= */
 
-.page {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: var(--space-5) var(--space-3) var(--space-6);
+.hero__content {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  max-width: 460px;
+  padding: 6vh 1.5rem 5vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-/* =========================================================
-   BRAND / LOGO
-   ========================================================= */
+/* --- Brand --- */
 
 .brand {
-  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.4rem;
+}
+
+.brand__badge {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FBF6EC 0%, var(--paper) 70%, #DCCDAE 100%);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.4) inset,
+    0 10px 26px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--gold-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
 }
 
 .brand__logo {
-  width: 110px;
-  height: 110px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 10px rgba(58, 42, 30, 0.15));
+  mix-blend-mode: multiply;
+}
+
+.brand__name {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ivory-dim);
+}
+
+/* --- Titolo --- */
+
+.hero__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 11vw, 3.6rem);
+  line-height: 1.05;
+  color: var(--ivory);
+  margin: 0.5rem 0 0.9rem;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Emblema decorativo (montagne + abete + bottiglia + calice) --- */
+
+.hero__emblem {
+  width: 150px;
+  height: 45px;
+  margin-bottom: 1.8rem;
+  overflow: visible;
+}
+
+.hero__emblem path,
+.hero__emblem line {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.emblem__mountains,
+.emblem__bottle {
+  fill: var(--gold);
+  stroke: none;
+  opacity: 0.9;
+}
+
+.emblem__pine {
+  fill: var(--gold);
+  stroke: none;
+  opacity: 0.9;
+}
+
+/* Respiro dorato sottile: il dettaglio "vivo" della pagina */
+@keyframes respiro-dorato {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.hero__emblem.is-visible {
+  animation: respiro-dorato 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__emblem.is-visible {
+    animation: none;
+  }
 }
 
 /* =========================================================
-   COPERTINA CARTA VINI
+   IL LIBRO — copertina presentata come oggetto fisico
    ========================================================= */
 
-.cover {
-  width: 100%;
-  margin-bottom: var(--space-4);
-  display: flex;
-  justify-content: center;
-}
-
-.cover__frame {
+.book {
   position: relative;
-  max-width: 280px;
   width: 100%;
-  background: var(--color-paper);
-  padding: var(--space-1);
-  border-radius: 2px;
-  box-shadow: var(--shadow-deep);
-  transition: transform 0.5s var(--ease-elegant);
+  max-width: 230px;
+  margin-bottom: 2.2rem;
+  perspective: 1000px;
 }
 
-.cover__frame::before {
-  /* Cornice oro sottile, richiama il dettaglio di un'etichetta pregiata */
-  content: "";
+/* Ombra proiettata sul "piano" immaginario sotto il libro */
+.book__shadow {
   position: absolute;
-  inset: 6px;
-  border: 1px solid var(--color-gold);
-  pointer-events: none;
-  opacity: 0.6;
-  z-index: 1;
+  left: 50%;
+  bottom: -14px;
+  width: 86%;
+  height: 28px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, var(--wood-shadow) 0%, transparent 75%);
+  filter: blur(2px);
+  z-index: 0;
 }
 
-.cover__image {
+.book__cover {
+  position: relative;
+  z-index: 1;
+  border-radius: 3px 6px 6px 3px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 18px 40px rgba(0, 0, 0, 0.55),
+    0 4px 14px rgba(0, 0, 0, 0.4);
+  transform: rotateY(-6deg) rotateX(2deg);
+  transition: transform 0.6s var(--ease-elegant);
+}
+
+.book__image {
   width: 100%;
   height: auto;
-  object-fit: cover;
-  border-radius: 1px;
+  display: block;
+  background: var(--paper);
+}
+
+/* Costola del libro: striscia scura sul lato sinistro per dare profondità */
+.book__spine {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 10px;
+  background: linear-gradient(to right, rgba(0,0,0,0.45), transparent);
+  pointer-events: none;
+}
+
+/* Riflesso di luce sottile, diagonale, per dare lucentezza alla copertina */
+.book__sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 62%);
+  pointer-events: none;
 }
 
 /* =========================================================
-   TESTO INTRODUTTIVO
-   ========================================================= */
-
-.intro {
-  max-width: 380px;
-  margin-bottom: var(--space-5);
-}
-
-.intro__text {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.15rem;
-  line-height: 1.6;
-  color: var(--color-wood-soft);
-  font-style: italic;
-  letter-spacing: 0.01em;
-}
-
-/* =========================================================
-   CTA — PULSANTE PRINCIPALE
-   Trattato come un "sigillo" da etichetta di vino:
-   doppio bordo sottile, non un bottone standard.
+   CTA — pulsante principale
    ========================================================= */
 
 .cta {
-  margin-bottom: var(--space-6);
-}
-
-.cta__button {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 0.7rem;
   position: relative;
-  padding: 1.1rem 2.3rem;
-  background-color: var(--color-bordeaux);
-  color: var(--color-ivory);
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  border-radius: 4px;
-  box-shadow: var(--shadow-soft);
+  padding: 1.05rem 2.1rem;
+  background-color: var(--bordeaux);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   transition:
     background-color 0.35s var(--ease-elegant),
     transform 0.35s var(--ease-elegant),
-    box-shadow 0.35s var(--ease-elegant);
-}
-
-/* Doppio bordo "etichetta", leggermente distanziato */
-.cta__button::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border: 1px solid rgba(247, 242, 233, 0.45);
-  border-radius: 2px;
-  pointer-events: none;
+    box-shadow 0.35s var(--ease-elegant),
+    border-color 0.35s var(--ease-elegant);
 }
 
 .cta__icon {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   line-height: 1;
 }
 
-.cta__label {
-  white-space: nowrap;
-}
-
-.cta__button:hover,
-.cta__button:focus-visible {
-  background-color: var(--color-bordeaux-light);
+.cta:hover,
+.cta:focus-visible {
+  background-color: var(--bordeaux-light);
+  border-color: var(--gold);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-deep);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.5);
 }
 
-.cta__button:active {
+.cta:active {
   transform: translateY(-1px);
 }
 
@@ -268,20 +361,28 @@ body::before {
    FOOTER
    ========================================================= */
 
-.site-footer__text {
-  font-family: var(--font-body);
+.footer {
+  margin-top: 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer__snowflake {
+  color: var(--gold);
   font-size: 0.8rem;
-  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+.footer__text {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-wood-soft);
-  opacity: 0.75;
+  color: var(--ivory-dim);
 }
 
 /* =========================================================
    ANIMAZIONI D'INGRESSO
-   Sequenza orchestrata: logo prima, poi copertina, testo,
-   pulsante e footer in cascata. Gestita in JS tramite
-   l'attributo [data-animate] + classe .is-visible.
    ========================================================= */
 
 [data-animate] {
@@ -289,30 +390,33 @@ body::before {
   will-change: opacity, transform;
 }
 
-[data-animate="fade-down"] {
-  transform: translateY(-16px);
-  transition: opacity 0.8s var(--ease-elegant), transform 0.8s var(--ease-elegant);
+[data-animate="fade-in"] {
+  transition: opacity 1s var(--ease-elegant);
 }
 
-[data-animate="fade-up"] {
-  transform: translateY(20px);
-  transition: opacity 0.8s var(--ease-elegant), transform 0.8s var(--ease-elegant);
+[data-animate="rise"] {
+  transform: translateY(28px) scale(0.97);
+  filter: blur(6px);
+  transition:
+    opacity 0.9s var(--ease-elegant),
+    transform 0.9s var(--ease-elegant),
+    filter 0.9s var(--ease-elegant);
 }
 
 [data-animate].is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+  filter: blur(0);
 }
 
-/* Rispetta le preferenze di accessibilità: niente movimento se richiesto */
 @media (prefers-reduced-motion: reduce) {
   [data-animate] {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
   }
-  .cover__frame,
-  .cta__button {
+  .book__cover {
     transition: none;
   }
 }
@@ -321,51 +425,49 @@ body::before {
    RESPONSIVE
    ========================================================= */
 
-/* Smartphone piccoli */
 @media (max-width: 360px) {
-  .page {
-    padding: var(--space-4) var(--space-2) var(--space-5);
+  .hero__content {
+    padding: 5vh 1.2rem 4vh;
   }
-
-  .intro__text {
-    font-size: 1.05rem;
+  .hero__title {
+    font-size: clamp(2.2rem, 12vw, 2.8rem);
   }
-
-  .cta__button {
-    padding: 1rem 1.8rem;
-    font-size: 0.98rem;
+  .book {
+    max-width: 190px;
   }
 }
 
-/* Tablet e desktop: la pagina resta una colonna centrata,
-   ma respira con più spazio attorno */
 @media (min-width: 600px) {
-  .page {
-    padding-top: var(--space-6);
+  .hero__content {
+    max-width: 520px;
   }
-
-  .brand__logo {
-    width: 130px;
-    height: 130px;
+  .book {
+    max-width: 270px;
   }
-
-  .cover__frame {
-    max-width: 320px;
-  }
-
-  .intro__text {
-    font-size: 1.25rem;
+  .hero__title {
+    font-size: 4rem;
   }
 }
 
-/* Schermi molto bassi in orizzontale (es. smartphone ruotato):
-   riduce gli spazi verticali per evitare scroll eccessivo */
-@media (max-height: 500px) and (orientation: landscape) {
-  .page {
-    padding-top: var(--space-3);
-    padding-bottom: var(--space-3);
+/* Parallasse leggero solo su schermi ampi con puntatore (desktop),
+   applicato via JS aggiungendo questa classe di supporto */
+@media (min-width: 900px) and (pointer: fine) {
+  .hero__mountains--far {
+    transition: transform 0.2s ease-out;
   }
-  .brand, .cover, .intro {
-    margin-bottom: var(--space-2);
+  .hero__mountains--near {
+    transition: transform 0.15s ease-out;
+  }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  .hero__content {
+    padding: 3vh 1.5rem 3vh;
+  }
+  .book {
+    margin-bottom: 1.2rem;
+  }
+  .hero__emblem {
+    margin-bottom: 1rem;
   }
 }
