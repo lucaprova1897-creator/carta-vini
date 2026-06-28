@@ -18,7 +18,7 @@
   --ivory:           #F2E9DC;
   --ivory-dim:       rgba(242, 233, 220, 0.72);
 
-  --paper:           #EDE3D3; /* colore di base della copertina/libro */
+  --paper:           #EDE3D3;
   --wood-shadow:     rgba(0, 0, 0, 0.55);
 
   /* --- Tipografia --- */
@@ -81,7 +81,6 @@ a:focus-visible {
   isolation: isolate;
 }
 
-/* Cielo: gradiente verticale, scuro in alto, bagliore caldo all'orizzonte */
 .hero__sky {
   position: absolute;
   inset: 0;
@@ -91,7 +90,6 @@ a:focus-visible {
     linear-gradient(to bottom, var(--night-deep) 0%, var(--night-mid) 55%, var(--night-mid) 100%);
 }
 
-/* Catena montuosa lontana */
 .hero__mountains {
   position: absolute;
   left: 0;
@@ -116,7 +114,6 @@ a:focus-visible {
   fill: var(--mountain-near);
 }
 
-/* Nebbia leggera che ammorbidisce la base, dove si appoggia il contenuto */
 .hero__mist {
   position: absolute;
   inset: 0;
@@ -125,7 +122,6 @@ a:focus-visible {
   pointer-events: none;
 }
 
-/* Grana sottile sopra tutto, per coerenza materica con il resto del sito */
 .hero__grain {
   position: absolute;
   inset: 0;
@@ -204,12 +200,12 @@ a:focus-visible {
   text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* --- Emblema decorativo (montagne + abete + bottiglia + calice) --- */
+/* --- Emblema decorativo --- */
 
 .hero__emblem {
   width: 190px;
   height: 57px;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   overflow: visible;
 }
 
@@ -235,7 +231,6 @@ a:focus-visible {
   opacity: 0.9;
 }
 
-/* Respiro dorato sottile: il dettaglio "vivo" della pagina */
 @keyframes respiro-dorato {
   0%, 100% { opacity: 0.85; }
   50% { opacity: 1; }
@@ -251,8 +246,21 @@ a:focus-visible {
   }
 }
 
+/* --- Frase introduttiva --- */
+
+.intro {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  line-height: 1.65;
+  color: var(--ivory-dim);
+  max-width: 360px;
+  margin-bottom: 2.4rem;
+}
+
 /* =========================================================
-   DIVISORE — sottile linea decorativa tra emblema e pulsante
+   DIVISORE
    ========================================================= */
 
 .divider {
@@ -365,9 +373,6 @@ a:focus-visible {
     filter: none;
     transition: none;
   }
-  .book__cover {
-    transition: none;
-  }
 }
 
 /* =========================================================
@@ -381,25 +386,17 @@ a:focus-visible {
   .hero__title {
     font-size: clamp(2.2rem, 12vw, 2.8rem);
   }
-  .book {
-    max-width: 190px;
-  }
 }
 
 @media (min-width: 600px) {
   .hero__content {
     max-width: 520px;
   }
-  .book {
-    max-width: 270px;
-  }
   .hero__title {
     font-size: 4rem;
   }
 }
 
-/* Parallasse leggero solo su schermi ampi con puntatore (desktop),
-   applicato via JS aggiungendo questa classe di supporto */
 @media (min-width: 900px) and (pointer: fine) {
   .hero__mountains--far {
     transition: transform 0.2s ease-out;
@@ -412,9 +409,6 @@ a:focus-visible {
 @media (max-height: 560px) and (orientation: landscape) {
   .hero__content {
     padding: 3vh 1.5rem 3vh;
-  }
-  .book {
-    margin-bottom: 1.2rem;
   }
   .hero__emblem {
     margin-bottom: 1rem;
