@@ -12,6 +12,34 @@ var CONFIG = {
 var ORDINE_CATEGORIE = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
 
 /* ---------------------------------------------------------
+   HINT SWIPE
+   --------------------------------------------------------- */
+function inizializzaHint() {
+  // Crea l'elemento hint e lo aggiunge alla pagina
+  var hint = document.createElement('div');
+  hint.className = 'swipe-hint';
+  hint.innerHTML = 'Proposte del giorno <span class="swipe-hint__freccia">→</span>';
+  document.body.appendChild(hint);
+
+  // Scompare dopo 4 secondi
+  window.setTimeout(function () {
+    hint.classList.add('nascosto');
+    // Lo rimuove dal DOM dopo la transizione
+    window.setTimeout(function () {
+      if (hint.parentNode) hint.parentNode.removeChild(hint);
+    }, 600);
+  }, 4000);
+
+  // Scompare anche se l'utente clicca sul tab proposte
+  var btnProposte = document.querySelector('[data-tab="proposte"]');
+  if (btnProposte) {
+    btnProposte.addEventListener('click', function () {
+      hint.classList.add('nascosto');
+    }, { once: true });
+  }
+}
+
+/* ---------------------------------------------------------
    TABS E SLIDER
    --------------------------------------------------------- */
 function inizializzaTabs() {
@@ -166,6 +194,7 @@ function aggiungiFeedbackPulsante() {
    INIT
    --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
+  inizializzaHint();
   inizializzaTabs();
   mostraData();
   caricaProposte();
