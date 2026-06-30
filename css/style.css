@@ -22,6 +22,7 @@
   --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
 
   --tab-h: 52px;
+  --hint-h: 64px; /* altezza bottone fisso in basso */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -152,7 +153,7 @@ a { text-decoration: none; color: inherit; }
 .hero__content {
   position: relative; z-index: 4;
   width: 100%; max-width: 460px;
-  padding: 5vh 1.5rem 5vh;
+  padding: 5vh 1.5rem var(--hint-h);
   display: flex; flex-direction: column;
   align-items: center; text-align: center;
 }
@@ -362,51 +363,58 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* =========================================================
-   HINT SWIPE — suggerimento "scorri a destra"
+   BOTTONE FISSO — Proposte del Giorno
+   Visibile solo sulla schermata carta vini, scompare
+   automaticamente quando si passa alle proposte.
    ========================================================= */
 
-.swipe-hint {
+.hint-btn {
   position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 200;
+  height: var(--hint-h);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(21, 16, 13, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--gold-soft);
-  border-radius: 999px;
-  padding: 0.6rem 1.1rem;
-  color: var(--ivory-dim);
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  pointer-events: none;
-  animation: hint-pulse 2s ease-in-out infinite;
-  transition: opacity 0.5s ease;
+  justify-content: center;
+  gap: 0.8rem;
+  background: var(--bordeaux);
+  border-top: 1px solid var(--gold-soft);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: none;
+  transition:
+    background 0.3s var(--ease-elegant),
+    transform 0.4s var(--ease-elegant),
+    opacity 0.4s var(--ease-elegant);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-.swipe-hint.nascosto {
-  opacity: 0;
+.hint-btn:active {
+  background: var(--bordeaux-light);
 }
 
-.swipe-hint__freccia {
-  font-size: 1rem;
-  animation: hint-freccia 1.2s ease-in-out infinite;
+.hint-btn__freccia {
+  font-size: 1.1rem;
+  animation: freccia-dx 1s ease-in-out infinite;
   display: inline-block;
 }
 
-@keyframes hint-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 166, 107, 0.3); }
-  50% { box-shadow: 0 0 0 6px rgba(201, 166, 107, 0); }
+@keyframes freccia-dx {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
 }
 
-@keyframes hint-freccia {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(4px); }
+/* Nascosto quando si è già sulle proposte */
+.hint-btn.nascosto {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* =========================================================
@@ -414,7 +422,7 @@ a { text-decoration: none; color: inherit; }
    ========================================================= */
 
 @media (max-width: 360px) {
-  .hero__content { padding: 4vh 1.2rem 4vh; }
+  .hero__content { padding: 4vh 1.2rem var(--hint-h); }
   .proposte__content { padding: 1.4rem 1rem 1.6rem; }
 }
 
@@ -424,6 +432,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 @media (max-height: 560px) and (orientation: landscape) {
-  .hero__content { padding: 2vh 1.5rem 2vh; }
+  .hero__content { padding: 2vh 1.5rem var(--hint-h); }
   .hero__emblem { margin-bottom: 0.8rem; }
 }
