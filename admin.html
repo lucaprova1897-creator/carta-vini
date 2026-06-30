@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Lou Tchappé · Admin Proposte</title>
+  <meta name="theme-color" content="#1A1410">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- SCHERMATA LOGIN -->
+  <div class="login" id="login-screen">
+    <div class="login__box">
+      <img src="logo.png" alt="Lou Tchappé" class="login__logo">
+      <h1 class="login__titolo">Area Gestione</h1>
+      <p class="login__sub">Lou Tchappé · Proposte del Giorno</p>
+      <input
+        type="password"
+        id="password-input"
+        class="login__input"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
+      <button class="login__btn" id="login-btn">Accedi</button>
+      <p class="login__errore" id="login-errore" style="display:none">Password errata</p>
+    </div>
+  </div>
+
+  <!-- PANNELLO ADMIN -->
+  <div class="admin" id="admin-panel" style="display:none">
+
+    <header class="admin__header">
+      <div class="admin__header-left">
+        <img src="logo.png" alt="Lou Tchappé" class="admin__logo">
+        <div>
+          <h1 class="admin__titolo">Proposte del Giorno</h1>
+          <p class="admin__data" id="admin-data"></p>
+        </div>
+      </div>
+      <button class="admin__logout" id="logout-btn" title="Esci">✕</button>
+    </header>
+
+    <!-- FORM -->
+    <div class="admin__form-box" id="form-box">
+      <h2 class="admin__form-titolo" id="form-titolo">Aggiungi Piatto</h2>
+
+      <label class="admin__label">Categoria</label>
+      <select class="admin__input" id="input-categoria">
+        <option value="Antipasto">Antipasto</option>
+        <option value="Primo">Primo</option>
+        <option value="Secondo">Secondo</option>
+        <option value="Contorno">Contorno</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Speciale">Speciale</option>
+      </select>
+
+      <label class="admin__label">Nome del piatto</label>
+      <input type="text" class="admin__input" id="input-nome" placeholder="Es. Zuppa valpellinentze">
+
+      <label class="admin__label">Descrizione</label>
+      <textarea class="admin__input admin__textarea" id="input-descrizione" placeholder="Es. Zuppa tipica valdostana con pane, verza e fontina" rows="3"></textarea>
+
+      <label class="admin__label">Prezzo (€)</label>
+      <input type="number" class="admin__input" id="input-prezzo" placeholder="Es. 12" min="0" step="0.5">
+
+      <div class="admin__form-btns">
+        <button class="admin__btn admin__btn--salva" id="btn-salva">💾 Salva</button>
+        <button class="admin__btn admin__btn--annulla" id="btn-annulla" style="display:none">Annulla</button>
+      </div>
+
+      <p class="admin__feedback" id="feedback" style="display:none"></p>
+    </div>
+
+    <!-- LISTA PIATTI -->
+    <div class="admin__lista-box">
+      <div class="admin__lista-header">
+        <h2 class="admin__form-titolo">Piatti di Oggi</h2>
+        <button class="admin__btn admin__btn--svuota" id="btn-svuota">🗑️ Svuota tutto</button>
+      </div>
+      <div class="admin__lista" id="admin-lista">
+        <p class="admin__loading">Caricamento...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
