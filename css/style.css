@@ -116,7 +116,7 @@ a { text-decoration: none; color: inherit; }
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: url('../bg-vini.jpg') center 20% / 160% auto no-repeat;
+  background: url('../bg-vini.jpg') center center / cover no-repeat;
 }
 
 /* Overlay scuro elegante */
@@ -166,7 +166,8 @@ a { text-decoration: none; color: inherit; }
 .brand__logo {
   width: 100%; height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.7));
+  opacity: 0.65;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
 }
 
 .brand__name {
