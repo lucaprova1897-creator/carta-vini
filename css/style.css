@@ -118,13 +118,10 @@ a { text-decoration: none; color: inherit; }
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    url('bg-vini.jpg') center center / cover no-repeat;
-  transform: scale(1.04);
-  transition: transform 8s ease-out;
+  background: url('../bg-vini.jpg') center center / cover no-repeat;
 }
 
-/* Overlay scuro elegante — più denso in basso per far leggere il testo */
+/* Overlay scuro elegante */
 .hero::after {
   content: "";
   position: absolute;
@@ -140,7 +137,7 @@ a { text-decoration: none; color: inherit; }
     );
 }
 
-/* Grana sottile per coerenza materica */
+/* Grana sottile */
 .hero__grain {
   position: absolute; inset: 0; z-index: 2;
   opacity: 0.25; pointer-events: none; mix-blend-mode: overlay;
@@ -246,8 +243,7 @@ a { text-decoration: none; color: inherit; }
 .footer__snowflake { color: var(--gold); font-size: 0.8rem; opacity: 0.9; }
 .footer__text {
   font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--ivory-dim);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  color: var(--ivory-dim); text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 
 /* =========================================================
@@ -265,9 +261,7 @@ a { text-decoration: none; color: inherit; }
    PROPOSTE DEL GIORNO — sfondo foto torrente
    ========================================================= */
 
-.slide--proposte {
-  background: var(--night-deep);
-}
+.slide--proposte { background: var(--night-deep); }
 
 /* Foto torrente come sfondo */
 .slide--proposte::before {
@@ -275,10 +269,10 @@ a { text-decoration: none; color: inherit; }
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: url('bg-proposte.jpg') center 40% / cover no-repeat;
+  background: url('../bg-proposte.jpg') center 40% / cover no-repeat;
 }
 
-/* Overlay più denso per leggibilità delle card */
+/* Overlay denso per leggibilità */
 .slide--proposte::after {
   content: "";
   position: absolute;
