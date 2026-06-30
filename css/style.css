@@ -362,6 +362,54 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* =========================================================
+   HINT SWIPE — suggerimento "scorri a destra"
+   ========================================================= */
+
+.swipe-hint {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(21, 16, 13, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  color: var(--ivory-dim);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: hint-pulse 2s ease-in-out infinite;
+  transition: opacity 0.5s ease;
+}
+
+.swipe-hint.nascosto {
+  opacity: 0;
+}
+
+.swipe-hint__freccia {
+  font-size: 1rem;
+  animation: hint-freccia 1.2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes hint-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 166, 107, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(201, 166, 107, 0); }
+}
+
+@keyframes hint-freccia {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+/* =========================================================
    RESPONSIVE
    ========================================================= */
 
