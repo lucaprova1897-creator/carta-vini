@@ -12,37 +12,31 @@ var CONFIG = {
 var ORDINE_CATEGORIE = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
 
 /* ---------------------------------------------------------
-   HINT SWIPE
+   BOTTONE FISSO PROPOSTE
    --------------------------------------------------------- */
-function inizializzaHint() {
-  // Crea l'elemento hint e lo aggiunge alla pagina
-  var hint = document.createElement('div');
-  hint.className = 'swipe-hint';
-  hint.innerHTML = 'Proposte del giorno <span class="swipe-hint__freccia">→</span>';
-  document.body.appendChild(hint);
+function inizializzaHintBtn() {
+  // Crea il bottone e lo aggiunge alla pagina
+  var btn = document.createElement('button');
+  btn.className = 'hint-btn';
+  btn.setAttribute('aria-label', 'Vai alle proposte del giorno');
+  btn.innerHTML =
+    '🍽️ Proposte del Giorno' +
+    '<span class="hint-btn__freccia">→</span>';
+  document.body.appendChild(btn);
 
-  // Scompare dopo 4 secondi
-  window.setTimeout(function () {
-    hint.classList.add('nascosto');
-    // Lo rimuove dal DOM dopo la transizione
-    window.setTimeout(function () {
-      if (hint.parentNode) hint.parentNode.removeChild(hint);
-    }, 600);
-  }, 4000);
+  // Click: porta direttamente alle proposte
+  btn.addEventListener('click', function () {
+    var tabProposte = document.querySelector('[data-tab="proposte"]');
+    if (tabProposte) tabProposte.click();
+  });
 
-  // Scompare anche se l'utente clicca sul tab proposte
-  var btnProposte = document.querySelector('[data-tab="proposte"]');
-  if (btnProposte) {
-    btnProposte.addEventListener('click', function () {
-      hint.classList.add('nascosto');
-    }, { once: true });
-  }
+  return btn;
 }
 
 /* ---------------------------------------------------------
    TABS E SLIDER
    --------------------------------------------------------- */
-function inizializzaTabs() {
+function inizializzaTabs(hintBtn) {
   var tabs = document.querySelectorAll('.tabs__btn');
   var slider = document.getElementById('slider');
   if (!tabs.length || !slider) return;
@@ -50,16 +44,24 @@ function inizializzaTabs() {
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       var target = this.dataset.tab;
+
+      // Aggiorna tab attivo
       tabs.forEach(function (t) {
         t.classList.remove('tabs__btn--active');
         t.setAttribute('aria-selected', 'false');
       });
       this.classList.add('tabs__btn--active');
       this.setAttribute('aria-selected', 'true');
+
+      // Sposta slider
       if (target === 'proposte') {
         slider.classList.add('slider--proposte');
+        // Nasconde il bottone quando si è sulle proposte
+        if (hintBtn) hintBtn.classList.add('nascosto');
       } else {
         slider.classList.remove('slider--proposte');
+        // Mostra di nuovo il bottone tornando alla carta vini
+        if (hintBtn) hintBtn.classList.remove('nascosto');
       }
     });
   });
@@ -71,6 +73,7 @@ function inizializzaTabs() {
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
   }, { passive: true });
+
   slider.addEventListener('touchend', function (e) {
     var deltaX = e.changedTouches[0].screenX - touchStartX;
     var deltaY = Math.abs(e.changedTouches[0].screenY - touchStartY);
@@ -194,8 +197,8 @@ function aggiungiFeedbackPulsante() {
    INIT
    --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
-  inizializzaHint();
-  inizializzaTabs();
+  var hintBtn = inizializzaHintBtn();
+  inizializzaTabs(hintBtn);
   mostraData();
   caricaProposte();
   animaIngressoSequenziale();
