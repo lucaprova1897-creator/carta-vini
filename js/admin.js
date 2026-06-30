@@ -169,7 +169,7 @@ function salva() {
     });
   }
 
-  var era modifica = stato.modificandoId !== null;
+  var eramodifica = stato.modificandoId !== null;
   salvaRemoto().then(function () {
     renderListaAdmin();
     resetForm();
