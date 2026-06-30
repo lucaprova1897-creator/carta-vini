@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Lou Tchappé · Carta dei Vini</title>
-  <meta name="description" content="Lou Tchappé, Cogne — La nostra carta dei vini di montagna.">
+  <meta name="description" content="Lou Tchappé, Cogne — Carta dei vini e proposte del giorno.">
   <meta name="theme-color" content="#1A1410">
 
-  <!-- Tipografia: Fraunces (display, calda) + Inter (testo utility) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -17,92 +16,123 @@
 </head>
 <body>
 
-  <!-- =========================================================
-       HERO A SCHERMO INTERO
-       Notte di montagna: cielo in gradiente + sagome di vette
-       disegnate in SVG (nessuna foto necessaria) + leggera nebbia.
-       Tutto il contenuto vive in questa unica schermata.
-       ========================================================= -->
-  <main class="hero">
+  <!-- TAB DI NAVIGAZIONE -->
+  <nav class="tabs" role="tablist">
+    <button class="tabs__btn tabs__btn--active" role="tab" data-tab="vini" aria-selected="true">
+      🍷 Carta dei Vini
+    </button>
+    <button class="tabs__btn" role="tab" data-tab="proposte" aria-selected="false">
+      🍽️ Proposte del Giorno
+    </button>
+  </nav>
 
-    <!-- Sfondo: cielo a gradiente -->
-    <div class="hero__sky" aria-hidden="true"></div>
+  <!-- CONTENITORE SCORREVOLE -->
+  <div class="slider" id="slider">
 
-    <!-- Sfondo: catena montuosa, due strati per profondità (parallasse) -->
-    <svg class="hero__mountains hero__mountains--far" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,400 L0,210 L90,140 L160,190 L260,90 L340,160 L430,60 L520,170 L610,110 L700,200 L800,120 L900,210 L1000,150 L1090,220 L1200,160 L1200,400 Z" />
-    </svg>
-    <svg class="hero__mountains hero__mountains--near" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,400 L0,280 L70,230 L150,290 L250,200 L330,260 L420,180 L510,270 L600,210 L690,290 L780,220 L880,300 L970,240 L1080,300 L1200,260 L1200,400 Z" />
-    </svg>
+    <!-- PAGINA 1: CARTA DEI VINI -->
+    <section class="slide" id="tab-vini" role="tabpanel">
+      <main class="hero">
 
-    <!-- Velo di nebbia in basso, ammorbidisce l'unione con il contenuto -->
-    <div class="hero__mist" aria-hidden="true"></div>
+        <div class="hero__sky" aria-hidden="true"></div>
 
-    <!-- Grana sottile (texture pergamena/legno) sopra tutto -->
-    <div class="hero__grain" aria-hidden="true"></div>
+        <svg class="hero__mountains hero__mountains--far" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,400 L0,210 L90,140 L160,190 L260,90 L340,160 L430,60 L520,170 L610,110 L700,200 L800,120 L900,210 L1000,150 L1090,220 L1200,160 L1200,400 Z" />
+        </svg>
+        <svg class="hero__mountains hero__mountains--near" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,400 L0,280 L70,230 L150,290 L250,200 L330,260 L420,180 L510,270 L600,210 L690,290 L780,220 L880,300 L970,240 L1080,300 L1200,260 L1200,400 Z" />
+        </svg>
 
-    <!-- CONTENUTO -->
-    <div class="hero__content">
+        <div class="hero__mist" aria-hidden="true"></div>
+        <div class="hero__grain" aria-hidden="true"></div>
 
-      <!-- LOGO -->
-      <div class="brand" data-animate="fade-in">
-        <div class="brand__badge">
-          <img
-            src="logo.png"
-            alt="Lou Tchappé"
-            class="brand__logo"
-            width="120"
-            height="120"
+        <div class="hero__content">
+
+          <div class="brand" data-animate="fade-in">
+            <div class="brand__badge">
+              <img src="logo.png" alt="Lou Tchappé" class="brand__logo" width="120" height="120">
+            </div>
+            <p class="brand__name">Lou Tchappé</p>
+          </div>
+
+          <h1 class="hero__title" data-animate="fade-in">Carta dei Vini</h1>
+
+          <svg class="hero__emblem" data-animate="fade-in" viewBox="0 0 200 60" aria-hidden="true">
+            <path class="emblem__mountains" d="M10,46 L34,22 L48,36 L72,12 L96,46 Z" />
+            <line class="emblem__tree" x1="118" y1="46" x2="118" y2="20" />
+            <path class="emblem__pine" d="M118,18 L110,32 L126,32 Z M118,24 L112,36 L124,36 Z" />
+            <path class="emblem__bottle" d="M148,10 h6 v4 l3,4 v26 h-12 v-26 l3,-4 Z" />
+            <path class="emblem__glass" d="M168,18 a8,7 0 1,0 16,0 a8,7 0 1,0 -16,0 M176,25 v14 M170,44 h12" />
+          </svg>
+
+          <p class="intro" data-animate="fade-in">
+            Ogni bottiglia racconta una storia di terra, di clima e di uomini.
+            Questa carta dei vini è un invito a scoprire i sapori che accompagnano
+            la nostra cucina e la nostra montagna.
+          </p>
+
+          <div class="divider" data-animate="fade-in" aria-hidden="true"></div>
+
+          
+            <a
+            href="CartaVini.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cta"
+            id="open-wine-list"
+            data-animate="fade-in"
           >
+            <span class="cta__icon" aria-hidden="true">🍷</span>
+            <span class="cta__label">Consulta la carta dei vini</span>
+          </a>
+
+          <footer class="footer" data-animate="fade-in">
+            <span class="footer__snowflake" aria-hidden="true">❆</span>
+            <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
+          </footer>
+
         </div>
-        <p class="brand__name">Lou Tchappé</p>
-      </div>
+      </main>
+    </section>
 
-      <!-- TITOLO -->
-      <h1 class="hero__title" data-animate="fade-in">Carta dei Vini</h1>
+    <!-- PAGINA 2: PROPOSTE DEL GIORNO -->
+    <section class="slide slide--proposte" id="tab-proposte" role="tabpanel">
 
-      <!-- ICONA DECORATIVA: montagne + calice, in stile disegnato -->
-      <svg class="hero__emblem" data-animate="fade-in" viewBox="0 0 200 60" aria-hidden="true">
-        <path class="emblem__mountains" d="M10,46 L34,22 L48,36 L72,12 L96,46 Z" />
-        <line class="emblem__tree" x1="118" y1="46" x2="118" y2="20" />
-        <path class="emblem__pine" d="M118,18 L110,32 L126,32 Z M118,24 L112,36 L124,36 Z" />
-        <path class="emblem__bottle" d="M148,10 h6 v4 l3,4 v26 h-12 v-26 l3,-4 Z" />
-        <path class="emblem__glass" d="M168,18 a8,7 0 1,0 16,0 a8,7 0 1,0 -16,0 M176,25 v14 M170,44 h12" />
+      <div class="proposte__sky" aria-hidden="true"></div>
+      <svg class="proposte__mountains" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,200 L0,100 L150,40 L300,90 L450,20 L600,80 L750,30 L900,100 L1050,50 L1200,80 L1200,200 Z" />
       </svg>
+      <div class="proposte__grain" aria-hidden="true"></div>
 
-      <!-- FRASE INTRODUTTIVA -->
-      <p class="intro" data-animate="fade-in">
-        Ogni bottiglia racconta una storia di terra, di clima e di uomini.
-        Questa carta dei vini è un invito a scoprire i sapori che accompagnano
-        la nostra cucina e la nostra montagna.
-      </p>
+      <div class="proposte__content">
 
-      <!-- Linea decorativa, richiama il dettaglio "etichetta" -->
-      <div class="divider" data-animate="fade-in" aria-hidden="true"></div>
+        <header class="proposte__header">
+          <p class="proposte__ristorante">Lou Tchappé</p>
+          <h2 class="proposte__titolo">Proposte del Giorno</h2>
+          <p class="proposte__data" id="data-oggi"></p>
+        </header>
 
-      <!-- CALL TO ACTION -->
-      
-        <a
-        href="CartaVini.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="cta"
-        id="open-wine-list"
-        data-animate="fade-in"
-      >
-        <span class="cta__icon" aria-hidden="true">🍷</span>
-        <span class="cta__label">Consulta la carta dei vini</span>
-      </a>
+        <div class="proposte__lista" id="proposte-lista">
+          <div class="proposte__loading">
+            <span class="proposte__spinner" aria-hidden="true"></span>
+            <p>Caricamento proposte...</p>
+          </div>
+        </div>
 
-      <!-- FOOTER -->
-      <footer class="footer" data-animate="fade-in">
-        <span class="footer__snowflake" aria-hidden="true">❆</span>
-        <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
-      </footer>
+        <div class="proposte__vuoto" id="proposte-vuoto" style="display:none">
+          <p>🍽️</p>
+          <p>Le proposte di oggi non sono ancora disponibili.</p>
+          <p>Chiedi al personale!</p>
+        </div>
 
-    </div>
-  </main>
+        <footer class="proposte__footer">
+          <span class="footer__snowflake" aria-hidden="true">❆</span>
+          <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
+        </footer>
+
+      </div>
+    </section>
+
+  </div>
 
   <script src="script.js"></script>
 </body>
