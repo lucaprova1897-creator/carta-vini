@@ -157,22 +157,31 @@ a { text-decoration: none; color: inherit; }
   align-items: center; text-align: center;
 }
 
-.brand { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; margin-bottom: 0.4rem; }
+/* --- Brand / Logo --- */
 
-.brand__badge {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #FBF6EC 0%, var(--paper) 70%, #DCCDAE 100%);
-  box-shadow: 0 2px 0 rgba(255,255,255,0.4) inset, 0 10px 26px rgba(0,0,0,0.45);
-  border: 1px solid var(--gold-soft);
-  display: flex; align-items: center; justify-content: center; padding: 10px;
+.brand {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0.7rem;
+  margin-bottom: 0.4rem;
 }
 
-.brand__logo { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.brand__badge {
+  width: 80px; height: 80px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.brand__logo {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
 
 .brand__name {
   font-size: 0.68rem; letter-spacing: 0.22em;
   text-transform: uppercase; color: var(--ivory-dim);
 }
+
+/* --- Titolo --- */
 
 .hero__title {
   font-family: var(--font-display); font-weight: 500;
@@ -181,6 +190,8 @@ a { text-decoration: none; color: inherit; }
   margin: 0.5rem 0 0.8rem;
   text-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
+
+/* --- Emblema --- */
 
 .hero__emblem { width: 180px; height: 54px; margin-bottom: 1.6rem; overflow: visible; }
 .hero__emblem path, .hero__emblem line {
@@ -197,13 +208,19 @@ a { text-decoration: none; color: inherit; }
 .hero__emblem.is-visible { animation: respiro-dorato 4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .hero__emblem.is-visible { animation: none; } }
 
+/* --- Frase --- */
+
 .intro {
   font-family: var(--font-display); font-weight: 400; font-style: italic;
   font-size: clamp(0.95rem, 4vw, 1.15rem); line-height: 1.65;
   color: var(--ivory-dim); max-width: 360px; margin-bottom: 2rem;
 }
 
+/* --- Divisore --- */
+
 .divider { width: 56px; height: 1px; background: var(--gold-soft); margin-bottom: 2.2rem; }
+
+/* --- CTA --- */
 
 .cta {
   display: inline-flex; align-items: center; gap: 0.7rem;
@@ -221,6 +238,8 @@ a { text-decoration: none; color: inherit; }
   transform: translateY(-3px); box-shadow: 0 16px 38px rgba(0,0,0,0.5);
 }
 .cta:active { transform: translateY(-1px); }
+
+/* --- Footer --- */
 
 .footer { margin-top: 2rem; display: flex; align-items: center; gap: 0.5rem; }
 .footer__snowflake { color: var(--gold); font-size: 0.8rem; opacity: 0.8; }
@@ -282,7 +301,10 @@ a { text-decoration: none; color: inherit; }
   font-weight: 500; color: var(--ivory); line-height: 1.1; margin-bottom: 0.4rem;
 }
 
-.proposte__data { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; }
+.proposte__data {
+  font-size: 0.75rem; color: var(--gold);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
 
 .proposte__lista { display: flex; flex-direction: column; gap: 0.9rem; }
 
@@ -307,7 +329,11 @@ a { text-decoration: none; color: inherit; }
   font-weight: 500; color: var(--ivory); white-space: nowrap;
 }
 
-.piatto__nome { font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; color: var(--ivory); line-height: 1.2; }
+.piatto__nome {
+  font-family: var(--font-display); font-size: 1.05rem;
+  font-weight: 500; color: var(--ivory); line-height: 1.2;
+}
+
 .piatto__descrizione { font-size: 0.82rem; color: var(--ivory-dim); line-height: 1.5; }
 
 .proposte__loading {
