@@ -118,8 +118,7 @@ a { text-decoration: none; color: inherit; }
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: url('../bg-vini.jpg') center center / cover no-repeat;
-}
+  background: url('../bg-vini.jpg') center 30% / 140% auto no-repeat;
 
 /* Overlay scuro elegante */
 .hero::after {
