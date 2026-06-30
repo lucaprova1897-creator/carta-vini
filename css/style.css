@@ -173,8 +173,8 @@ a { text-decoration: none; color: inherit; }
 
 .brand__name {
   font-size: 0.68rem; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--ivory-dim);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  text-transform: uppercase; color: #651A14;
+  text-shadow: 0 1px 4px rgba(255,255,255,0.3);
 }
 
 /* --- Titolo --- */
@@ -210,8 +210,8 @@ a { text-decoration: none; color: inherit; }
 .intro {
   font-family: var(--font-display); font-weight: 400; font-style: italic;
   font-size: clamp(0.95rem, 4vw, 1.15rem); line-height: 1.65;
-  color: #651A14; max-width: 360px; margin-bottom: 2rem;
-  text-shadow: 0 1px 6px rgba(255,255,255,0.4);
+  color: var(--ivory-dim); max-width: 360px; margin-bottom: 2rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 
 /* --- Divisore --- */
