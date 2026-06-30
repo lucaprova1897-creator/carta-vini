@@ -166,7 +166,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .brand__badge {
-  width: 80px; height: 80px;
+  width: 130px; height: 130px;
   display: flex; align-items: center; justify-content: center;
 }
 
