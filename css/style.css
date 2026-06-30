@@ -1,27 +1,17 @@
 /* =========================================================
    LOU TCHAPPÉ — Carta dei Vini + Proposte del Giorno
-   Sfondo: tramonto sul Gran Paradiso, larici in primo piano
+   Sfondi: foto reali della Valnontey
    ========================================================= */
 
 :root {
-  /* --- Palette tramonto alpino --- */
-  --night-deep:     #1A0A0F; /* base cielo in alto, viola scuro */
-  --night-mid:      #3D1A2E; /* viola/magenta medio */
-  --night-glow:     #8B3A2A; /* arancio bruciato all'orizzonte */
-  --sunset-orange:  #C45E2A; /* arancio tramonto */
-  --sunset-gold:    #D4872A; /* oro/ambra sulle cime */
-  --snow:           #F0EBE3; /* nevai sulle vette */
-  --mountain-far:   #2A1520; /* catena lontana, quasi silhouette */
-  --mountain-mid:   #1E0E18; /* catena media */
-  --mountain-near:  #120A0E; /* catena vicina, scurissima */
-  --larix:          #0D0608; /* larici, quasi neri */
-
-  --bordeaux:        #7A1B2E;
-  --bordeaux-light:  #9C2940;
+  --night-deep:     #0D0A08;
+  --night-mid:      #1A1208;
   --gold:            #C9A66B;
   --gold-soft:       rgba(201, 166, 107, 0.55);
+  --bordeaux:        #7A1B2E;
+  --bordeaux-light:  #9C2940;
   --ivory:           #F2E9DC;
-  --ivory-dim:       rgba(242, 233, 220, 0.72);
+  --ivory-dim:       rgba(242, 233, 220, 0.80);
   --paper:           #EDE3D3;
 
   --font-display: 'Fraunces', Georgia, serif;
@@ -55,9 +45,9 @@ a { text-decoration: none; color: inherit; }
   z-index: 100;
   height: var(--tab-h);
   display: flex;
-  background: rgba(26, 10, 15, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(13, 10, 8, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--gold-soft);
 }
 
@@ -108,7 +98,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* =========================================================
-   HERO — sfondo tramonto Gran Paradiso
+   HERO — sfondo foto montagne con ghiacciai
    ========================================================= */
 
 .hero {
@@ -122,127 +112,43 @@ a { text-decoration: none; color: inherit; }
   isolation: isolate;
 }
 
-/* Cielo: viola scuro in alto → arancio bruciato all'orizzonte */
-.hero__sky {
-  position: absolute; inset: 0; z-index: 0;
-  background:
-    radial-gradient(ellipse 140% 50% at 60% 100%, var(--sunset-gold) 0%, var(--sunset-orange) 20%, transparent 55%),
-    radial-gradient(ellipse 100% 40% at 30% 90%, var(--night-glow) 0%, transparent 50%),
-    linear-gradient(to bottom,
-      var(--night-deep) 0%,
-      var(--night-mid) 40%,
-      #6B2535 65%,
-      #8B3A2A 80%,
-      #A04820 100%
-    );
-}
-
-/* Stelle sparse nel cielo scuro (in alto) */
-.hero__sky::before {
+/* Foto di sfondo: montagne con ghiacciai */
+.hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 15% 12%, rgba(255,255,255,0.7) 0%, transparent 100%),
-    radial-gradient(1px 1px at 28% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 42% 5%, rgba(255,255,255,0.8) 0%, transparent 100%),
-    radial-gradient(1px 1px at 58% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 71% 7%, rgba(255,255,255,0.6) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 83% 14%, rgba(255,255,255,0.7) 0%, transparent 100%),
-    radial-gradient(1px 1px at 92% 9%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 7% 22%, rgba(255,255,255,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 35% 18%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 65% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 88% 25%, rgba(255,255,255,0.4) 0%, transparent 100%);
-  opacity: 0.9;
-  pointer-events: none;
+  z-index: 0;
+  background:
+    url('bg-vini.jpg') center center / cover no-repeat;
+  transform: scale(1.04);
+  transition: transform 8s ease-out;
 }
 
-/* Bagliore arancio sulla vetta principale (sole al tramonto) */
-.hero__sky::after {
+/* Overlay scuro elegante — più denso in basso per far leggere il testo */
+.hero::after {
   content: "";
   position: absolute;
-  width: 120px; height: 120px;
-  top: 28%; right: 22%;
-  background: radial-gradient(circle, rgba(212,135,42,0.6) 0%, rgba(196,94,42,0.3) 40%, transparent 70%);
-  border-radius: 50%;
-  filter: blur(20px);
-  pointer-events: none;
-}
-
-/* Montagne lontane — sagome con cime illuminate dal tramonto */
-.hero__mountains--far {
-  bottom: 28%;
-  height: 50%;
-  opacity: 1;
-}
-.hero__mountains--far path {
-  fill: var(--mountain-far);
-  /* Cima illuminata dall'arancio del tramonto */
-  filter: drop-shadow(0 -2px 8px rgba(196,94,42,0.4));
-}
-
-/* Nevai sulle cime — overlay bianco-avorio sui picchi */
-.hero__snowcaps {
-  position: absolute;
-  left: 0; width: 100%;
-  height: 30%;
-  bottom: 52%;
-  z-index: 2;
-  opacity: 0.85;
-}
-.hero__snowcaps path { fill: var(--snow); }
-
-/* Montagne medie */
-.hero__mountains--mid {
-  position: absolute;
-  left: 0; width: 100%;
-  height: 38%;
-  bottom: 15%;
-  z-index: 3;
-}
-.hero__mountains--mid path { fill: var(--mountain-mid); }
-
-/* Montagne vicine — scurissime, quasi nere */
-.hero__mountains--near {
-  bottom: 0;
-  height: 28%;
-  z-index: 4;
-}
-.hero__mountains--near path { fill: var(--mountain-near); }
-
-/* Larici in primo piano — caratteristici del Gran Paradiso */
-.hero__larici {
-  position: absolute;
-  left: 0; width: 100%;
-  height: 35%;
-  bottom: 0;
-  z-index: 5;
-}
-.hero__larici path { fill: var(--larix); }
-
-/* Velo di nebbia/foschia nella valle */
-.hero__mist {
-  position: absolute; inset: 0; z-index: 6;
+  inset: 0;
+  z-index: 1;
   background:
-    linear-gradient(to bottom,
-      transparent 0%,
-      transparent 50%,
-      rgba(26,10,15,0.3) 75%,
-      rgba(26,10,15,0.8) 100%
+    linear-gradient(
+      to bottom,
+      rgba(13, 10, 8, 0.35) 0%,
+      rgba(13, 10, 8, 0.25) 30%,
+      rgba(13, 10, 8, 0.55) 65%,
+      rgba(13, 10, 8, 0.82) 100%
     );
-  pointer-events: none;
 }
 
-/* Grana sottile */
+/* Grana sottile per coerenza materica */
 .hero__grain {
-  position: absolute; inset: 0; z-index: 7;
-  opacity: 0.3; pointer-events: none; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  position: absolute; inset: 0; z-index: 2;
+  opacity: 0.25; pointer-events: none; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .hero__content {
-  position: relative; z-index: 8;
+  position: relative; z-index: 3;
   width: 100%; max-width: 460px;
   padding: 5vh 1.5rem var(--hint-h);
   display: flex; flex-direction: column;
@@ -265,12 +171,13 @@ a { text-decoration: none; color: inherit; }
 .brand__logo {
   width: 100%; height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.7)) brightness(0) invert(1);
 }
 
 .brand__name {
   font-size: 0.68rem; letter-spacing: 0.22em;
   text-transform: uppercase; color: var(--ivory-dim);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 
 /* --- Titolo --- */
@@ -280,7 +187,7 @@ a { text-decoration: none; color: inherit; }
   font-size: clamp(2.4rem, 10vw, 3.4rem);
   line-height: 1.05; color: var(--ivory);
   margin: 0.5rem 0 0.8rem;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(196,94,42,0.3);
+  text-shadow: 0 2px 20px rgba(0,0,0,0.7), 0 4px 40px rgba(0,0,0,0.5);
 }
 
 /* --- Emblema --- */
@@ -289,6 +196,7 @@ a { text-decoration: none; color: inherit; }
 .hero__emblem path, .hero__emblem line {
   fill: none; stroke: var(--gold); stroke-width: 1.6;
   stroke-linejoin: round; stroke-linecap: round;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
 }
 .emblem__mountains, .emblem__bottle { fill: var(--gold); stroke: none; opacity: 0.9; }
 .emblem__pine { fill: var(--gold); stroke: none; opacity: 0.9; }
@@ -306,6 +214,7 @@ a { text-decoration: none; color: inherit; }
   font-family: var(--font-display); font-weight: 400; font-style: italic;
   font-size: clamp(0.95rem, 4vw, 1.15rem); line-height: 1.65;
   color: var(--ivory-dim); max-width: 360px; margin-bottom: 2rem;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
 }
 
 /* --- Divisore --- */
@@ -321,7 +230,7 @@ a { text-decoration: none; color: inherit; }
   font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
   letter-spacing: 0.04em; text-transform: uppercase;
   border: 1px solid var(--gold-soft); border-radius: 999px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
   transition: background-color 0.35s var(--ease-elegant), transform 0.35s var(--ease-elegant), box-shadow 0.35s var(--ease-elegant), border-color 0.35s var(--ease-elegant);
 }
 .cta__icon { font-size: 1rem; line-height: 1; }
@@ -334,8 +243,12 @@ a { text-decoration: none; color: inherit; }
 /* --- Footer --- */
 
 .footer { margin-top: 2rem; display: flex; align-items: center; gap: 0.5rem; }
-.footer__snowflake { color: var(--gold); font-size: 0.8rem; opacity: 0.8; }
-.footer__text { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ivory-dim); }
+.footer__snowflake { color: var(--gold); font-size: 0.8rem; opacity: 0.9; }
+.footer__text {
+  font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ivory-dim);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
 
 /* =========================================================
    ANIMAZIONI
@@ -349,31 +262,39 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* =========================================================
-   PROPOSTE DEL GIORNO
+   PROPOSTE DEL GIORNO — sfondo foto torrente
    ========================================================= */
 
-.slide--proposte { background: var(--night-deep); }
+.slide--proposte {
+  background: var(--night-deep);
+}
 
-.proposte__sky {
-  position: absolute; inset: 0; z-index: 0;
+/* Foto torrente come sfondo */
+.slide--proposte::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('bg-proposte.jpg') center 40% / cover no-repeat;
+}
+
+/* Overlay più denso per leggibilità delle card */
+.slide--proposte::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   background:
-    radial-gradient(ellipse 120% 40% at 50% 0%, var(--sunset-orange) 0%, var(--night-mid) 50%, transparent 70%),
-    linear-gradient(to bottom, #3D1A2E 0%, var(--night-deep) 100%);
-}
-
-.proposte__mountains {
-  position: absolute; top: 0; left: 0; width: 100%; height: 140px; z-index: 1;
-}
-.proposte__mountains path { fill: var(--mountain-far); opacity: 0.7; }
-
-.proposte__grain {
-  position: absolute; inset: 0; z-index: 2;
-  opacity: 0.25; pointer-events: none; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    linear-gradient(
+      to bottom,
+      rgba(13, 10, 8, 0.55) 0%,
+      rgba(13, 10, 8, 0.65) 40%,
+      rgba(13, 10, 8, 0.80) 100%
+    );
 }
 
 .proposte__content {
-  position: relative; z-index: 3;
+  position: relative; z-index: 2;
   padding: 1.8rem 1.2rem 2rem;
   max-width: 520px; margin: 0 auto;
 }
@@ -391,6 +312,7 @@ a { text-decoration: none; color: inherit; }
 .proposte__titolo {
   font-family: var(--font-display); font-size: clamp(1.8rem, 8vw, 2.4rem);
   font-weight: 500; color: var(--ivory); line-height: 1.1; margin-bottom: 0.4rem;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.6);
 }
 
 .proposte__data {
@@ -401,9 +323,11 @@ a { text-decoration: none; color: inherit; }
 .proposte__lista { display: flex; flex-direction: column; gap: 0.9rem; }
 
 .piatto {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(201,166,107,0.2);
-  border-radius: 10px; padding: 1rem 1.1rem;
+  background: rgba(13, 10, 8, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201,166,107,0.3);
+  border-radius: 12px; padding: 1rem 1.1rem;
   display: flex; flex-direction: column; gap: 0.3rem;
 }
 
@@ -412,7 +336,7 @@ a { text-decoration: none; color: inherit; }
 .piatto__categoria {
   font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--gold);
-  background: rgba(201,166,107,0.12); padding: 0.2rem 0.5rem;
+  background: rgba(201,166,107,0.15); padding: 0.2rem 0.5rem;
   border-radius: 999px; white-space: nowrap;
 }
 
@@ -467,13 +391,14 @@ a { text-decoration: none; color: inherit; }
   justify-content: center;
   gap: 0.8rem;
   background: var(--bordeaux);
-  border-top: 1px solid var(--gold-soft);
   color: var(--ivory);
   font-family: var(--font-body);
   font-size: 0.95rem; font-weight: 600;
   letter-spacing: 0.05em;
   cursor: pointer;
   border: none;
+  border-top: 1px solid var(--gold-soft);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
   transition: background 0.3s var(--ease-elegant), transform 0.4s var(--ease-elegant), opacity 0.4s var(--ease-elegant);
   padding-bottom: env(safe-area-inset-bottom);
 }
