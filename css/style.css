@@ -5,14 +5,12 @@
 
 :root {
   --night-deep:     #0D0A08;
-  --night-mid:      #1A1208;
   --gold:            #C9A66B;
   --gold-soft:       rgba(201, 166, 107, 0.55);
   --bordeaux:        #7A1B2E;
   --bordeaux-light:  #9C2940;
   --ivory:           #F2E9DC;
   --ivory-dim:       rgba(242, 233, 220, 0.80);
-  --paper:           #EDE3D3;
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -112,13 +110,14 @@ a { text-decoration: none; color: inherit; }
   isolation: isolate;
 }
 
-/* Foto di sfondo: montagne con ghiacciai */
+/* Foto montagne — zoom sui ghiacciai in alto */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: url('../bg-vini.jpg') center 30% / 140% auto no-repeat;
+  background: url('../bg-vini.jpg') center 20% / 160% auto no-repeat;
+}
 
 /* Overlay scuro elegante */
 .hero::after {
@@ -129,10 +128,10 @@ a { text-decoration: none; color: inherit; }
   background:
     linear-gradient(
       to bottom,
-      rgba(13, 10, 8, 0.35) 0%,
-      rgba(13, 10, 8, 0.25) 30%,
+      rgba(13, 10, 8, 0.30) 0%,
+      rgba(13, 10, 8, 0.20) 30%,
       rgba(13, 10, 8, 0.55) 65%,
-      rgba(13, 10, 8, 0.82) 100%
+      rgba(13, 10, 8, 0.85) 100%
     );
 }
 
@@ -172,7 +171,8 @@ a { text-decoration: none; color: inherit; }
 
 .brand__name {
   font-size: 0.68rem; letter-spacing: 0.22em;
-  text-transform: uppercase; color: #651A14;
+  text-transform: uppercase;
+  color: #651A14;
   text-shadow: 0 1px 4px rgba(255,255,255,0.3);
 }
 
@@ -186,36 +186,22 @@ a { text-decoration: none; color: inherit; }
   text-shadow: 0 2px 20px rgba(0,0,0,0.7), 0 4px 40px rgba(0,0,0,0.5);
 }
 
-/* --- Emblema --- */
-
-.hero__emblem { width: 180px; height: 54px; margin-bottom: 1.6rem; overflow: visible; }
-.hero__emblem path, .hero__emblem line {
-  fill: none; stroke: var(--gold); stroke-width: 1.6;
-  stroke-linejoin: round; stroke-linecap: round;
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
-}
-.emblem__mountains, .emblem__bottle { fill: var(--gold); stroke: none; opacity: 0.9; }
-.emblem__pine { fill: var(--gold); stroke: none; opacity: 0.9; }
-
-@keyframes respiro-dorato {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
-}
-.hero__emblem.is-visible { animation: respiro-dorato 4s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .hero__emblem.is-visible { animation: none; } }
-
 /* --- Frase --- */
 
 .intro {
   font-family: var(--font-display); font-weight: 400; font-style: italic;
   font-size: clamp(0.95rem, 4vw, 1.15rem); line-height: 1.65;
   color: var(--ivory-dim); max-width: 360px; margin-bottom: 2rem;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
 }
 
 /* --- Divisore --- */
 
-.divider { width: 56px; height: 1px; background: var(--gold-soft); margin-bottom: 2.2rem; }
+.divider {
+  width: 56px; height: 1px;
+  background: var(--gold-soft);
+  margin-bottom: 2.2rem;
+}
 
 /* --- CTA --- */
 
@@ -227,7 +213,10 @@ a { text-decoration: none; color: inherit; }
   letter-spacing: 0.04em; text-transform: uppercase;
   border: 1px solid var(--gold-soft); border-radius: 999px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-  transition: background-color 0.35s var(--ease-elegant), transform 0.35s var(--ease-elegant), box-shadow 0.35s var(--ease-elegant), border-color 0.35s var(--ease-elegant);
+  transition: background-color 0.35s var(--ease-elegant),
+              transform 0.35s var(--ease-elegant),
+              box-shadow 0.35s var(--ease-elegant),
+              border-color 0.35s var(--ease-elegant);
 }
 .cta__icon { font-size: 1rem; line-height: 1; }
 .cta:hover, .cta:focus-visible {
@@ -238,7 +227,10 @@ a { text-decoration: none; color: inherit; }
 
 /* --- Footer --- */
 
-.footer { margin-top: 2rem; display: flex; align-items: center; gap: 0.5rem; }
+.footer {
+  margin-top: 2rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
 .footer__snowflake { color: var(--gold); font-size: 0.8rem; opacity: 0.9; }
 .footer__text {
   font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
@@ -262,7 +254,6 @@ a { text-decoration: none; color: inherit; }
 
 .slide--proposte { background: var(--night-deep); }
 
-/* Foto torrente come sfondo */
 .slide--proposte::before {
   content: "";
   position: absolute;
@@ -271,7 +262,6 @@ a { text-decoration: none; color: inherit; }
   background: url('../bg-proposte.jpg') center 40% / cover no-repeat;
 }
 
-/* Overlay denso per leggibilità */
 .slide--proposte::after {
   content: "";
   position: absolute;
@@ -324,7 +314,10 @@ a { text-decoration: none; color: inherit; }
   display: flex; flex-direction: column; gap: 0.3rem;
 }
 
-.piatto__top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.piatto__top {
+  display: flex; align-items: baseline;
+  justify-content: space-between; gap: 0.5rem;
+}
 
 .piatto__categoria {
   font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em;
@@ -343,7 +336,9 @@ a { text-decoration: none; color: inherit; }
   font-weight: 500; color: var(--ivory); line-height: 1.2;
 }
 
-.piatto__descrizione { font-size: 0.82rem; color: var(--ivory-dim); line-height: 1.5; }
+.piatto__descrizione {
+  font-size: 0.82rem; color: var(--ivory-dim); line-height: 1.5;
+}
 
 .proposte__loading {
   display: flex; flex-direction: column; align-items: center;
@@ -392,7 +387,9 @@ a { text-decoration: none; color: inherit; }
   border: none;
   border-top: 1px solid var(--gold-soft);
   box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
-  transition: background 0.3s var(--ease-elegant), transform 0.4s var(--ease-elegant), opacity 0.4s var(--ease-elegant);
+  transition: background 0.3s var(--ease-elegant),
+              transform 0.4s var(--ease-elegant),
+              opacity 0.4s var(--ease-elegant);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
