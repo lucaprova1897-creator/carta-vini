@@ -1,6 +1,6 @@
 /* =========================================================
    LOU TCHAPPÉ — script.js
-   Gestione tabs, slider, animazioni, caricamento proposte
+   Gestione tabs, slider, animazioni, proposte e vini al calice
    ========================================================= */
 
 var CONFIG = {
@@ -9,27 +9,22 @@ var CONFIG = {
   BASE_URL: 'https://api.jsonbin.io/v3/b'
 };
 
-var ORDINE_CATEGORIE = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
+var ORDINE_CATEGORIE_PIATTI = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
+var ORDINE_CATEGORIE_VINI = ['Bollicine', 'Bianchi', 'Rosati', 'Rossi'];
 
 /* ---------------------------------------------------------
    BOTTONE FISSO PROPOSTE
    --------------------------------------------------------- */
 function inizializzaHintBtn() {
-  // Crea il bottone e lo aggiunge alla pagina
   var btn = document.createElement('button');
   btn.className = 'hint-btn';
   btn.setAttribute('aria-label', 'Vai alle proposte del giorno');
-  btn.innerHTML =
-    '🍽️ Proposte del Giorno' +
-    '<span class="hint-btn__freccia">→</span>';
+  btn.innerHTML = '🍽️ Proposte del Giorno <span class="hint-btn__freccia">→</span>';
   document.body.appendChild(btn);
-
-  // Click: porta direttamente alle proposte
   btn.addEventListener('click', function () {
     var tabProposte = document.querySelector('[data-tab="proposte"]');
     if (tabProposte) tabProposte.click();
   });
-
   return btn;
 }
 
@@ -44,23 +39,17 @@ function inizializzaTabs(hintBtn) {
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       var target = this.dataset.tab;
-
-      // Aggiorna tab attivo
       tabs.forEach(function (t) {
         t.classList.remove('tabs__btn--active');
         t.setAttribute('aria-selected', 'false');
       });
       this.classList.add('tabs__btn--active');
       this.setAttribute('aria-selected', 'true');
-
-      // Sposta slider
       if (target === 'proposte') {
         slider.classList.add('slider--proposte');
-        // Nasconde il bottone quando si è sulle proposte
         if (hintBtn) hintBtn.classList.add('nascosto');
       } else {
         slider.classList.remove('slider--proposte');
-        // Mostra di nuovo il bottone tornando alla carta vini
         if (hintBtn) hintBtn.classList.remove('nascosto');
       }
     });
@@ -73,7 +62,6 @@ function inizializzaTabs(hintBtn) {
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
   }, { passive: true });
-
   slider.addEventListener('touchend', function (e) {
     var deltaX = e.changedTouches[0].screenX - touchStartX;
     var deltaY = Math.abs(e.changedTouches[0].screenY - touchStartY);
@@ -98,13 +86,9 @@ function mostraData() {
 }
 
 /* ---------------------------------------------------------
-   CARICAMENTO PROPOSTE DA JSONBIN
+   CARICAMENTO DATI DA JSONBIN
    --------------------------------------------------------- */
-function caricaProposte() {
-  var lista = document.getElementById('proposte-lista');
-  var vuoto = document.getElementById('proposte-vuoto');
-  if (!lista) return;
-
+function caricaDati() {
   fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID + '/latest', {
     headers: { 'X-Master-Key': CONFIG.API_KEY }
   })
@@ -113,26 +97,43 @@ function caricaProposte() {
     return res.json();
   })
   .then(function (data) {
-    var proposte = (data.record && data.record.proposte) ? data.record.proposte : [];
-    renderProposte(proposte, lista, vuoto);
+    var record = data.record || {};
+    var proposte = record.proposte || [];
+    var vini = record.vini || [];
+    renderProposte(proposte);
+    renderViniCalice(vini);
   })
   .catch(function () {
-    lista.innerHTML = '<div class="proposte__vuoto"><p>⚠️</p><p>Impossibile caricare le proposte. Riprova più tardi.</p></div>';
+    var lista = document.getElementById('proposte-lista');
+    if (lista) lista.innerHTML = '<div class="proposte__vuoto"><p>⚠️</p><p>Impossibile caricare i dati. Riprova più tardi.</p></div>';
+    var caliceLista = document.getElementById('calice-lista');
+    if (caliceLista) caliceLista.innerHTML = '';
+    var caliceVuoto = document.getElementById('calice-vuoto');
+    if (caliceVuoto) caliceVuoto.style.display = 'block';
   });
 }
 
-function renderProposte(proposte, lista, vuoto) {
+/* ---------------------------------------------------------
+   RENDER PROPOSTE DEL GIORNO
+   --------------------------------------------------------- */
+function renderProposte(proposte) {
+  var lista = document.getElementById('proposte-lista');
+  var vuoto = document.getElementById('proposte-vuoto');
+  if (!lista) return;
+
   lista.innerHTML = '';
+
   if (!proposte || proposte.length === 0) {
     lista.style.display = 'none';
     if (vuoto) vuoto.style.display = 'block';
     return;
   }
+
   if (vuoto) vuoto.style.display = 'none';
   lista.style.display = 'flex';
 
   proposte.sort(function (a, b) {
-    return ORDINE_CATEGORIE.indexOf(a.categoria) - ORDINE_CATEGORIE.indexOf(b.categoria);
+    return ORDINE_CATEGORIE_PIATTI.indexOf(a.categoria) - ORDINE_CATEGORIE_PIATTI.indexOf(b.categoria);
   });
 
   proposte.forEach(function (piatto) {
@@ -146,6 +147,59 @@ function renderProposte(proposte, lista, vuoto) {
       '<div class="piatto__nome">' + piatto.nome + '</div>' +
       '<div class="piatto__descrizione">' + piatto.descrizione + '</div>';
     lista.appendChild(card);
+  });
+}
+
+/* ---------------------------------------------------------
+   RENDER VINI AL CALICE
+   --------------------------------------------------------- */
+function renderViniCalice(vini) {
+  var lista = document.getElementById('calice-lista');
+  var vuoto = document.getElementById('calice-vuoto');
+  if (!lista) return;
+
+  lista.innerHTML = '';
+
+  if (!vini || vini.length === 0) {
+    lista.style.display = 'none';
+    if (vuoto) vuoto.style.display = 'block';
+    return;
+  }
+
+  if (vuoto) vuoto.style.display = 'none';
+  lista.style.display = 'flex';
+  lista.style.flexDirection = 'column';
+  lista.style.gap = '1rem';
+
+  /* Raggruppa per categoria nell'ordine desiderato */
+  ORDINE_CATEGORIE_VINI.forEach(function (categoria) {
+    var gruppo = vini.filter(function (v) { return v.categoria === categoria; });
+    if (gruppo.length === 0) return;
+
+    var gruppoEl = document.createElement('div');
+    gruppoEl.className = 'calice__gruppo';
+
+    var catEl = document.createElement('div');
+    catEl.className = 'calice__categoria';
+    catEl.textContent = categoria;
+    gruppoEl.appendChild(catEl);
+
+    gruppo.forEach(function (vino) {
+      var vinoEl = document.createElement('div');
+      vinoEl.className = 'calice__vino';
+      vinoEl.innerHTML =
+        '<div class="calice__vino-info">' +
+          '<div class="calice__vino-tipo">' + vino.tipologia + '</div>' +
+          '<div class="calice__vino-nome">' + vino.nome + '</div>' +
+          (vino.vitigno ? '<div class="calice__vino-vitigno">' + vino.vitigno + '</div>' : '') +
+          (vino.descrizione ? '<div class="calice__vino-descrizione">' + vino.descrizione + '</div>' : '') +
+          '<div class="calice__vino-produttore">' + vino.produttore + '</div>' +
+        '</div>' +
+        '<div class="calice__vino-prezzo">€ ' + Number(vino.prezzo).toFixed(2) + '</div>';
+      gruppoEl.appendChild(vinoEl);
+    });
+
+    lista.appendChild(gruppoEl);
   });
 }
 
@@ -164,20 +218,19 @@ function animaIngressoSequenziale() {
 }
 
 /* ---------------------------------------------------------
-   PARALLASSE LEGGERO (solo desktop)
+   PARALLASSE (solo desktop)
    --------------------------------------------------------- */
 function attivaParallasse() {
   var supportaHover = window.matchMedia('(min-width: 900px) and (pointer: fine)').matches;
   var movimentoRidotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!supportaHover || movimentoRidotto) return;
-  var lontane = document.querySelector('.hero__mountains--far');
-  var vicine = document.querySelector('.hero__mountains--near');
-  if (!lontane || !vicine) return;
   document.addEventListener('mousemove', function (e) {
     var px = (e.clientX / window.innerWidth - 0.5);
     var py = (e.clientY / window.innerHeight - 0.5);
-    lontane.style.transform = 'translate(' + (px * 10) + 'px,' + (py * 4) + 'px)';
-    vicine.style.transform = 'translate(' + (px * 18) + 'px,' + (py * 7) + 'px)';
+    var lontane = document.querySelector('.hero__mountains--far');
+    var vicine = document.querySelector('.hero__mountains--near');
+    if (lontane) lontane.style.transform = 'translate(' + (px * 10) + 'px,' + (py * 4) + 'px)';
+    if (vicine) vicine.style.transform = 'translate(' + (px * 18) + 'px,' + (py * 7) + 'px)';
   });
 }
 
@@ -200,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var hintBtn = inizializzaHintBtn();
   inizializzaTabs(hintBtn);
   mostraData();
-  caricaProposte();
+  caricaDati();
   animaIngressoSequenziale();
   attivaParallasse();
   aggiungiFeedbackPulsante();
