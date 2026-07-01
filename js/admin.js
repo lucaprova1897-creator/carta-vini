@@ -1,6 +1,6 @@
 /* =========================================================
    LOU TCHAPPÉ — admin.js
-   Pannello di gestione proposte del giorno
+   Gestione piatti del giorno + vini al calice
    ========================================================= */
 
 var CONFIG = {
@@ -10,11 +10,14 @@ var CONFIG = {
   BASE_URL: 'https://api.jsonbin.io/v3/b'
 };
 
-var ORDINE_CATEGORIE = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
+var ORDINE_PIATTI = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
+var ORDINE_VINI = ['Bollicine', 'Bianchi', 'Rosati', 'Rossi'];
 
 var stato = {
   proposte: [],
-  modificandoId: null
+  vini: [],
+  modificandoPiattoId: null,
+  modificandoVinoId: null
 };
 
 /* ---------------------------------------------------------
@@ -61,29 +64,32 @@ function inizializzaAdmin() {
     });
   }
 
-  caricaProposte();
+  inizializzaTabAdmin();
+  caricaDati();
+  inizializzaFormPiatti();
+  inizializzaFormVini();
+}
 
-  document.getElementById('btn-salva').addEventListener('click', salva);
-  document.getElementById('btn-annulla').addEventListener('click', function () {
-    resetForm();
-  });
-  document.getElementById('btn-svuota').addEventListener('click', function () {
-    if (confirm('Sei sicuro di voler eliminare tutte le proposte di oggi?')) {
-      stato.proposte = [];
-      salvaRemoto().then(function () {
-        renderListaAdmin();
-        mostraFeedback('Tutte le proposte eliminate', 'ok');
-      });
-    }
+/* ---------------------------------------------------------
+   TAB ADMIN (Piatti / Vini)
+   --------------------------------------------------------- */
+function inizializzaTabAdmin() {
+  var tabs = document.querySelectorAll('.admin__tab');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('admin__tab--active'); });
+      this.classList.add('admin__tab--active');
+      var section = this.dataset.section;
+      document.getElementById('section-piatti').style.display = section === 'piatti' ? 'block' : 'none';
+      document.getElementById('section-vini').style.display = section === 'vini' ? 'block' : 'none';
+    });
   });
 }
 
 /* ---------------------------------------------------------
-   CARICA PROPOSTE
+   CARICA DATI DA JSONBIN
    --------------------------------------------------------- */
-function caricaProposte() {
-  var listaEl = document.getElementById('admin-lista');
-
+function caricaDati() {
   fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID + '/latest', {
     headers: { 'X-Master-Key': CONFIG.API_KEY }
   })
@@ -92,28 +98,102 @@ function caricaProposte() {
     return res.json();
   })
   .then(function (data) {
-    stato.proposte = (data.record && data.record.proposte) ? data.record.proposte : [];
-    renderListaAdmin();
+    var record = data.record || {};
+    stato.proposte = record.proposte || [];
+    stato.vini = record.vini || [];
+    renderListaPiatti();
+    renderListaVini();
   })
   .catch(function () {
-    listaEl.innerHTML = '<p class="admin__vuoto">⚠️ Errore di connessione. Riprova.</p>';
+    document.getElementById('admin-lista-piatti').innerHTML =
+      '<p class="admin__vuoto">⚠️ Errore di connessione. Riprova.</p>';
+    document.getElementById('admin-lista-vini').innerHTML =
+      '<p class="admin__vuoto">⚠️ Errore di connessione. Riprova.</p>';
   });
 }
 
 /* ---------------------------------------------------------
-   RENDER LISTA ADMIN
+   SALVA REMOTO
    --------------------------------------------------------- */
-function renderListaAdmin() {
-  var listaEl = document.getElementById('admin-lista');
+function salvaRemoto() {
+  return fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': CONFIG.API_KEY
+    },
+    body: JSON.stringify({
+      proposte: stato.proposte,
+      vini: stato.vini
+    })
+  }).then(function (res) {
+    if (!res.ok) throw new Error('Errore ' + res.status);
+    return res.json();
+  });
+}
+
+/* =========================================================
+   PIATTI DEL GIORNO
+   ========================================================= */
+
+function inizializzaFormPiatti() {
+  document.getElementById('btn-salva-piatto').addEventListener('click', salvaPiatto);
+  document.getElementById('btn-annulla-piatto').addEventListener('click', function () {
+    resetFormPiatti();
+  });
+  document.getElementById('btn-svuota-piatti').addEventListener('click', function () {
+    if (confirm('Eliminare tutti i piatti di oggi?')) {
+      stato.proposte = [];
+      salvaRemoto().then(function () {
+        renderListaPiatti();
+        mostraFeedback('feedback-piatti', 'Tutti i piatti eliminati', 'ok');
+      });
+    }
+  });
+}
+
+function salvaPiatto() {
+  var categoria = document.getElementById('input-categoria').value.trim();
+  var nome = document.getElementById('input-nome-piatto').value.trim();
+  var descrizione = document.getElementById('input-descrizione-piatto').value.trim();
+  var prezzo = parseFloat(document.getElementById('input-prezzo-piatto').value);
+
+  if (!nome) { mostraFeedback('feedback-piatti', 'Inserisci il nome del piatto', 'err'); return; }
+  if (isNaN(prezzo) || prezzo < 0) { mostraFeedback('feedback-piatti', 'Inserisci un prezzo valido', 'err'); return; }
+
+  var eraModifica = stato.modificandoPiattoId !== null;
+
+  if (eraModifica) {
+    stato.proposte = stato.proposte.map(function (p) {
+      if (p.id === stato.modificandoPiattoId) {
+        return { id: p.id, categoria: categoria, nome: nome, descrizione: descrizione, prezzo: prezzo };
+      }
+      return p;
+    });
+  } else {
+    stato.proposte.push({ id: Date.now(), categoria: categoria, nome: nome, descrizione: descrizione, prezzo: prezzo });
+  }
+
+  salvaRemoto().then(function () {
+    renderListaPiatti();
+    resetFormPiatti();
+    mostraFeedback('feedback-piatti', eraModifica ? 'Piatto aggiornato ✓' : 'Piatto aggiunto ✓', 'ok');
+  }).catch(function () {
+    mostraFeedback('feedback-piatti', 'Errore di salvataggio. Riprova.', 'err');
+  });
+}
+
+function renderListaPiatti() {
+  var listaEl = document.getElementById('admin-lista-piatti');
   listaEl.innerHTML = '';
 
   if (stato.proposte.length === 0) {
-    listaEl.innerHTML = '<p class="admin__vuoto">Nessuna proposta aggiunta oggi.<br>Usa il form qui sopra per aggiungerne.</p>';
+    listaEl.innerHTML = '<p class="admin__vuoto">Nessun piatto aggiunto.<br>Usa il form qui sopra.</p>';
     return;
   }
 
   var ordinate = stato.proposte.slice().sort(function (a, b) {
-    return ORDINE_CATEGORIE.indexOf(a.categoria) - ORDINE_CATEGORIE.indexOf(b.categoria);
+    return ORDINE_PIATTI.indexOf(a.categoria) - ORDINE_PIATTI.indexOf(b.categoria);
   });
 
   ordinate.forEach(function (piatto) {
@@ -127,8 +207,8 @@ function renderListaAdmin() {
         '<div class="admin__piatto-prezzo">€ ' + Number(piatto.prezzo).toFixed(2) + '</div>' +
       '</div>' +
       '<div class="admin__piatto-azioni">' +
-        '<button class="admin__piatto-btn admin__piatto-btn--modifica" data-id="' + piatto.id + '" title="Modifica">✏️</button>' +
-        '<button class="admin__piatto-btn admin__piatto-btn--elimina" data-id="' + piatto.id + '" title="Elimina">🗑️</button>' +
+        '<button class="admin__piatto-btn admin__piatto-btn--modifica" title="Modifica">✏️</button>' +
+        '<button class="admin__piatto-btn admin__piatto-btn--elimina" title="Elimina">🗑️</button>' +
       '</div>';
 
     card.querySelector('.admin__piatto-btn--modifica').addEventListener('click', function () {
@@ -142,110 +222,175 @@ function renderListaAdmin() {
   });
 }
 
-/* ---------------------------------------------------------
-   SALVA
-   --------------------------------------------------------- */
-function salva() {
-  var categoria = document.getElementById('input-categoria').value.trim();
-  var nome = document.getElementById('input-nome').value.trim();
-  var descrizione = document.getElementById('input-descrizione').value.trim();
-  var prezzo = parseFloat(document.getElementById('input-prezzo').value);
-
-  if (!nome) { mostraFeedback('Inserisci il nome del piatto', 'err'); return; }
-  if (isNaN(prezzo) || prezzo < 0) { mostraFeedback('Inserisci un prezzo valido', 'err'); return; }
-
-  var eraModifica = stato.modificandoId !== null;
-
-  if (eraModifica) {
-    stato.proposte = stato.proposte.map(function (p) {
-      if (p.id === stato.modificandoId) {
-        return { id: p.id, categoria: categoria, nome: nome, descrizione: descrizione, prezzo: prezzo };
-      }
-      return p;
-    });
-  } else {
-    stato.proposte.push({
-      id: Date.now(),
-      categoria: categoria,
-      nome: nome,
-      descrizione: descrizione,
-      prezzo: prezzo
-    });
-  }
-
-  salvaRemoto().then(function () {
-    renderListaAdmin();
-    resetForm();
-    mostraFeedback(eraModifica ? 'Piatto aggiornato ✓' : 'Piatto aggiunto ✓', 'ok');
-  }).catch(function () {
-    mostraFeedback('Errore di salvataggio. Riprova.', 'err');
-  });
-}
-
-/* ---------------------------------------------------------
-   MODIFICA
-   --------------------------------------------------------- */
 function modificaPiatto(id) {
   var piatto = stato.proposte.find(function (p) { return p.id === id; });
   if (!piatto) return;
-
-  stato.modificandoId = id;
+  stato.modificandoPiattoId = id;
   document.getElementById('input-categoria').value = piatto.categoria;
-  document.getElementById('input-nome').value = piatto.nome;
-  document.getElementById('input-descrizione').value = piatto.descrizione;
-  document.getElementById('input-prezzo').value = piatto.prezzo;
-  document.getElementById('form-titolo').textContent = 'Modifica Piatto';
-  document.getElementById('btn-annulla').style.display = 'block';
-  document.getElementById('form-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  document.getElementById('input-nome').focus();
+  document.getElementById('input-nome-piatto').value = piatto.nome;
+  document.getElementById('input-descrizione-piatto').value = piatto.descrizione;
+  document.getElementById('input-prezzo-piatto').value = piatto.prezzo;
+  document.getElementById('form-titolo-piatti').textContent = 'Modifica Piatto';
+  document.getElementById('btn-annulla-piatto').style.display = 'block';
+  document.getElementById('form-box-piatti').scrollIntoView({ behavior: 'smooth' });
 }
 
-/* ---------------------------------------------------------
-   ELIMINA
-   --------------------------------------------------------- */
 function eliminaPiatto(id) {
   stato.proposte = stato.proposte.filter(function (p) { return p.id !== id; });
   salvaRemoto().then(function () {
-    renderListaAdmin();
-    mostraFeedback('Piatto eliminato', 'ok');
+    renderListaPiatti();
+    mostraFeedback('feedback-piatti', 'Piatto eliminato', 'ok');
   });
 }
 
-/* ---------------------------------------------------------
-   RESET FORM
-   --------------------------------------------------------- */
-function resetForm() {
-  stato.modificandoId = null;
+function resetFormPiatti() {
+  stato.modificandoPiattoId = null;
   document.getElementById('input-categoria').value = 'Antipasto';
-  document.getElementById('input-nome').value = '';
-  document.getElementById('input-descrizione').value = '';
-  document.getElementById('input-prezzo').value = '';
-  document.getElementById('form-titolo').textContent = 'Aggiungi Piatto';
-  document.getElementById('btn-annulla').style.display = 'none';
+  document.getElementById('input-nome-piatto').value = '';
+  document.getElementById('input-descrizione-piatto').value = '';
+  document.getElementById('input-prezzo-piatto').value = '';
+  document.getElementById('form-titolo-piatti').textContent = 'Aggiungi Piatto';
+  document.getElementById('btn-annulla-piatto').style.display = 'none';
 }
 
-/* ---------------------------------------------------------
-   SALVA REMOTO SU JSONBIN
-   --------------------------------------------------------- */
-function salvaRemoto() {
-  return fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Master-Key': CONFIG.API_KEY
-    },
-    body: JSON.stringify({ proposte: stato.proposte })
-  }).then(function (res) {
-    if (!res.ok) throw new Error('Errore ' + res.status);
-    return res.json();
+/* =========================================================
+   VINI AL CALICE
+   ========================================================= */
+
+function inizializzaFormVini() {
+  document.getElementById('btn-salva-vino').addEventListener('click', salvaVino);
+  document.getElementById('btn-annulla-vino').addEventListener('click', function () {
+    resetFormVini();
   });
+  document.getElementById('btn-svuota-vini').addEventListener('click', function () {
+    if (confirm('Eliminare tutti i vini al calice?')) {
+      stato.vini = [];
+      salvaRemoto().then(function () {
+        renderListaVini();
+        mostraFeedback('feedback-vini', 'Tutti i vini eliminati', 'ok');
+      });
+    }
+  });
+}
+
+function salvaVino() {
+  var categoria = document.getElementById('input-categoria-vino').value.trim();
+  var tipologia = document.getElementById('input-tipologia-vino').value.trim();
+  var nome = document.getElementById('input-nome-vino').value.trim();
+  var vitigno = document.getElementById('input-vitigno-vino').value.trim();
+  var descrizione = document.getElementById('input-descrizione-vino').value.trim();
+  var produttore = document.getElementById('input-produttore-vino').value.trim();
+  var prezzo = parseFloat(document.getElementById('input-prezzo-vino').value);
+
+  if (!nome) { mostraFeedback('feedback-vini', 'Inserisci il nome del vino', 'err'); return; }
+  if (!produttore) { mostraFeedback('feedback-vini', 'Inserisci il produttore', 'err'); return; }
+  if (isNaN(prezzo) || prezzo < 0) { mostraFeedback('feedback-vini', 'Inserisci un prezzo valido', 'err'); return; }
+
+  var eraModifica = stato.modificandoVinoId !== null;
+
+  if (eraModifica) {
+    stato.vini = stato.vini.map(function (v) {
+      if (v.id === stato.modificandoVinoId) {
+        return { id: v.id, categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, prezzo: prezzo };
+      }
+      return v;
+    });
+  } else {
+    stato.vini.push({ id: Date.now(), categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, prezzo: prezzo });
+  }
+
+  salvaRemoto().then(function () {
+    renderListaVini();
+    resetFormVini();
+    mostraFeedback('feedback-vini', eraModifica ? 'Vino aggiornato ✓' : 'Vino aggiunto ✓', 'ok');
+  }).catch(function () {
+    mostraFeedback('feedback-vini', 'Errore di salvataggio. Riprova.', 'err');
+  });
+}
+
+function renderListaVini() {
+  var listaEl = document.getElementById('admin-lista-vini');
+  listaEl.innerHTML = '';
+
+  if (stato.vini.length === 0) {
+    listaEl.innerHTML = '<p class="admin__vuoto">Nessun vino aggiunto.<br>Usa il form qui sopra.</p>';
+    return;
+  }
+
+  var ordinati = stato.vini.slice().sort(function (a, b) {
+    return ORDINE_VINI.indexOf(a.categoria) - ORDINE_VINI.indexOf(b.categoria);
+  });
+
+  ordinati.forEach(function (vino) {
+    var card = document.createElement('div');
+    card.className = 'admin__piatto';
+    card.innerHTML =
+      '<div class="admin__piatto-info">' +
+        '<div class="admin__piatto-cat">' + vino.categoria + ' · ' + vino.tipologia + '</div>' +
+        '<div class="admin__piatto-nome">' + vino.nome + '</div>' +
+        (vino.vitigno ? '<div class="admin__piatto-desc">' + vino.vitigno + '</div>' : '') +
+        '<div class="admin__piatto-desc">' + vino.produttore + '</div>' +
+        '<div class="admin__piatto-prezzo">€ ' + Number(vino.prezzo).toFixed(2) + '</div>' +
+      '</div>' +
+      '<div class="admin__piatto-azioni">' +
+        '<button class="admin__piatto-btn admin__piatto-btn--modifica" title="Modifica">✏️</button>' +
+        '<button class="admin__piatto-btn admin__piatto-btn--elimina" title="Elimina">🗑️</button>' +
+      '</div>';
+
+    card.querySelector('.admin__piatto-btn--modifica').addEventListener('click', function () {
+      modificaVino(vino.id);
+    });
+    card.querySelector('.admin__piatto-btn--elimina').addEventListener('click', function () {
+      eliminaVino(vino.id);
+    });
+
+    listaEl.appendChild(card);
+  });
+}
+
+function modificaVino(id) {
+  var vino = stato.vini.find(function (v) { return v.id === id; });
+  if (!vino) return;
+  stato.modificandoVinoId = id;
+  document.getElementById('input-categoria-vino').value = vino.categoria;
+  document.getElementById('input-tipologia-vino').value = vino.tipologia;
+  document.getElementById('input-nome-vino').value = vino.nome;
+  document.getElementById('input-vitigno-vino').value = vino.vitigno || '';
+  document.getElementById('input-descrizione-vino').value = vino.descrizione || '';
+  document.getElementById('input-produttore-vino').value = vino.produttore;
+  document.getElementById('input-prezzo-vino').value = vino.prezzo;
+  document.getElementById('form-titolo-vini').textContent = 'Modifica Vino';
+  document.getElementById('btn-annulla-vino').style.display = 'block';
+  document.getElementById('form-box-vini').scrollIntoView({ behavior: 'smooth' });
+}
+
+function eliminaVino(id) {
+  stato.vini = stato.vini.filter(function (v) { return v.id !== id; });
+  salvaRemoto().then(function () {
+    renderListaVini();
+    mostraFeedback('feedback-vini', 'Vino eliminato', 'ok');
+  });
+}
+
+function resetFormVini() {
+  stato.modificandoVinoId = null;
+  document.getElementById('input-categoria-vino').value = 'Bollicine';
+  document.getElementById('input-tipologia-vino').value = 'Spumante';
+  document.getElementById('input-nome-vino').value = '';
+  document.getElementById('input-vitigno-vino').value = '';
+  document.getElementById('input-descrizione-vino').value = '';
+  document.getElementById('input-produttore-vino').value = '';
+  document.getElementById('input-prezzo-vino').value = '';
+  document.getElementById('form-titolo-vini').textContent = 'Aggiungi Vino al Calice';
+  document.getElementById('btn-annulla-vino').style.display = 'none';
 }
 
 /* ---------------------------------------------------------
    FEEDBACK
    --------------------------------------------------------- */
-function mostraFeedback(messaggio, tipo) {
-  var el = document.getElementById('feedback');
+function mostraFeedback(elId, messaggio, tipo) {
+  var el = document.getElementById(elId);
+  if (!el) return;
   el.textContent = messaggio;
   el.className = 'admin__feedback admin__feedback--' + tipo;
   el.style.display = 'block';
