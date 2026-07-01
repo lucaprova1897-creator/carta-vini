@@ -3,116 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Lou Tchappé · Carta dei Vini</title>
-  <meta name="description" content="Lou Tchappé, Cogne — Carta dei vini e proposte del giorno.">
-  <meta name="theme-color" content="#0D0A08">
+  <title>Lou Tchappé · Admin Proposte</title>
+  <meta name="theme-color" content="#1A1410">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
-  <nav class="tabs" role="tablist">
-    <button class="tabs__btn tabs__btn--active" role="tab" data-tab="vini" aria-selected="true">
-      🍷 Carta dei Vini
-    </button>
-    <button class="tabs__btn" role="tab" data-tab="proposte" aria-selected="false">
-      🍽️ Proposte del Giorno
-    </button>
-  </nav>
+  <!-- SCHERMATA LOGIN -->
+  <div class="login" id="login-screen">
+    <div class="login__box">
+      <img src="logo.png" alt="Lou Tchappé" class="login__logo">
+      <h1 class="login__titolo">Area Gestione</h1>
+      <p class="login__sub">Lou Tchappé · Proposte del Giorno</p>
+      <input
+        type="password"
+        id="password-input"
+        class="login__input"
+        placeholder="Password"
+        autocomplete="current-password"
+      >
+      <button class="login__btn" id="login-btn">Accedi</button>
+      <p class="login__errore" id="login-errore" style="display:none">Password errata</p>
+    </div>
+  </div>
 
-  <div class="slider" id="slider">
+  <!-- PANNELLO ADMIN -->
+  <div class="admin" id="admin-panel" style="display:none">
 
-    <!-- PAGINA 1: CARTA DEI VINI -->
-    <section class="slide" id="tab-vini" role="tabpanel">
-      <main class="hero">
-
-        <div class="hero__grain" aria-hidden="true"></div>
-
-        <div class="hero__content">
-
-          <!-- LOGO — in cima -->
-          <div class="brand" data-animate="fade-in">
-            <div class="brand__badge">
-              <img src="logo.png" alt="Lou Tchappé" class="brand__logo" width="120" height="120">
-            </div>
-            <p class="brand__name">Lou Tchappé</p>
-          </div>
-
-          <!-- BOX SEMITRASPARENTE — titolo, frase, pulsante, footer -->
-          <div class="hero__text-box">
-
-            <h1 class="hero__title" data-animate="fade-in">Carta dei Vini</h1>
-
-            <p class="intro" data-animate="fade-in">
-              Ogni bottiglia racconta una storia di terra, di clima e di uomini.
-              Questa carta dei vini è un invito a scoprire i sapori che accompagnano
-              la nostra cucina e la nostra montagna.
-            </p>
-
-            <div class="divider" data-animate="fade-in" aria-hidden="true"></div>
-
-            
-              href="CartaVini.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="cta"
-              id="open-wine-list"
-              data-animate="fade-in"
-            >
-              <span class="cta__icon" aria-hidden="true">🍷</span>
-              <span class="cta__label">Consulta la carta dei vini</span>
-            </a>
-
-            <footer class="footer" data-animate="fade-in">
-              <span class="footer__snowflake" aria-hidden="true">❆</span>
-              <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
-            </footer>
-
-          </div>
-
+    <header class="admin__header">
+      <div class="admin__header-left">
+        <img src="logo.png" alt="Lou Tchappé" class="admin__logo">
+        <div>
+          <h1 class="admin__titolo">Proposte del Giorno</h1>
+          <p class="admin__data" id="admin-data"></p>
         </div>
-      </main>
-    </section>
-
-    <!-- PAGINA 2: PROPOSTE DEL GIORNO -->
-    <section class="slide slide--proposte" id="tab-proposte" role="tabpanel">
-
-      <div class="proposte__content">
-
-        <header class="proposte__header">
-          <p class="proposte__ristorante">Lou Tchappé</p>
-          <h2 class="proposte__titolo">Proposte del Giorno</h2>
-          <p class="proposte__data" id="data-oggi"></p>
-        </header>
-
-        <div class="proposte__lista" id="proposte-lista">
-          <div class="proposte__loading">
-            <span class="proposte__spinner" aria-hidden="true"></span>
-            <p>Caricamento proposte...</p>
-          </div>
-        </div>
-
-        <div class="proposte__vuoto" id="proposte-vuoto" style="display:none">
-          <p>🍽️</p>
-          <p>Le proposte di oggi non sono ancora disponibili.</p>
-          <p>Chiedi al personale!</p>
-        </div>
-
-        <footer class="proposte__footer">
-          <span class="footer__snowflake" aria-hidden="true">❆</span>
-          <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
-        </footer>
-
       </div>
-    </section>
+      <button class="admin__logout" id="logout-btn" title="Esci">✕</button>
+    </header>
+
+    <!-- FORM -->
+    <div class="admin__form-box" id="form-box">
+      <h2 class="admin__form-titolo" id="form-titolo">Aggiungi Piatto</h2>
+
+      <label class="admin__label">Categoria</label>
+      <select class="admin__input" id="input-categoria">
+        <option value="Antipasto">Antipasto</option>
+        <option value="Primo">Primo</option>
+        <option value="Secondo">Secondo</option>
+        <option value="Contorno">Contorno</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Speciale">Speciale</option>
+      </select>
+
+      <label class="admin__label">Nome del piatto</label>
+      <input type="text" class="admin__input" id="input-nome" placeholder="Es. Zuppa valpellinentze">
+
+      <label class="admin__label">Descrizione</label>
+      <textarea class="admin__input admin__textarea" id="input-descrizione" placeholder="Es. Zuppa tipica valdostana con pane, verza e fontina" rows="3"></textarea>
+
+      <label class="admin__label">Prezzo (€)</label>
+      <input type="number" class="admin__input" id="input-prezzo" placeholder="Es. 12" min="0" step="0.5">
+
+      <div class="admin__form-btns">
+        <button class="admin__btn admin__btn--salva" id="btn-salva">💾 Salva</button>
+        <button class="admin__btn admin__btn--annulla" id="btn-annulla" style="display:none">Annulla</button>
+      </div>
+
+      <p class="admin__feedback" id="feedback" style="display:none"></p>
+    </div>
+
+    <!-- LISTA PIATTI -->
+    <div class="admin__lista-box">
+      <div class="admin__lista-header">
+        <h2 class="admin__form-titolo">Piatti di Oggi</h2>
+        <button class="admin__btn admin__btn--svuota" id="btn-svuota">🗑️ Svuota tutto</button>
+      </div>
+      <div class="admin__lista" id="admin-lista">
+        <p class="admin__loading">Caricamento...</p>
+      </div>
+    </div>
 
   </div>
 
-  <script src="script.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>
