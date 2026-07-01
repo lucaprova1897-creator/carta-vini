@@ -47,7 +47,7 @@
       <button class="admin__logout" id="logout-btn" title="Esci">✕</button>
     </header>
 
-    <!-- TAB ADMIN: Piatti / Vini -->
+    <!-- TAB ADMIN -->
     <div class="admin__tabs">
       <button class="admin__tab admin__tab--active" data-section="piatti">
         🍽️ Piatti del Giorno
@@ -73,23 +73,8 @@
           <option value="Speciale">Speciale</option>
         </select>
 
-        <label class="admin__label">Produttore</label>
-        <input type="text" class="admin__input" id="input-produttore-vino" placeholder="Es. Cave Mont Blanc">
-
-        <label class="admin__label">Regione</label>
-        <select class="admin__input" id="input-regione-vino">
-          <option value="Valle d'Aosta">Valle d'Aosta</option>
-          <option value="Piemonte">Piemonte</option>
-          <option value="Lombardia">Lombardia</option>
-          <option value="Trentino">Trentino</option>
-          <option value="Alto Adige">Alto Adige</option>
-          <option value="Veneto">Veneto</option>
-          <option value="Friuli">Friuli</option>
-          <option value="Toscana">Toscana</option>
-          <option value="Francia">Francia</option>
-          <option value="Svizzera">Svizzera</option>
-          <option value="Altro">Altro</option>
-        </select>
+        <label class="admin__label">Nome del piatto</label>
+        <input type="text" class="admin__input" id="input-nome-piatto" placeholder="Es. Zuppa valpellinentze">
 
         <label class="admin__label">Descrizione</label>
         <textarea class="admin__input admin__textarea" id="input-descrizione-piatto" placeholder="Breve descrizione del piatto" rows="3"></textarea>
@@ -140,6 +125,24 @@
           <option value="Dolce">Dolce</option>
         </select>
 
+        <label class="admin__label">Produttore</label>
+        <input type="text" class="admin__input" id="input-produttore-vino" placeholder="Es. Cave Mont Blanc">
+
+        <label class="admin__label">Regione</label>
+        <select class="admin__input" id="input-regione-vino">
+          <option value="Valle d'Aosta">Valle d'Aosta</option>
+          <option value="Piemonte">Piemonte</option>
+          <option value="Lombardia">Lombardia</option>
+          <option value="Trentino">Trentino</option>
+          <option value="Alto Adige">Alto Adige</option>
+          <option value="Veneto">Veneto</option>
+          <option value="Friuli">Friuli</option>
+          <option value="Toscana">Toscana</option>
+          <option value="Francia">Francia</option>
+          <option value="Svizzera">Svizzera</option>
+          <option value="Altro">Altro</option>
+        </select>
+
         <label class="admin__label">Nome del vino</label>
         <input type="text" class="admin__input" id="input-nome-vino" placeholder="Es. Blanc de Morgex et de La Salle">
 
@@ -148,9 +151,6 @@
 
         <label class="admin__label">Descrizione breve</label>
         <textarea class="admin__input admin__textarea" id="input-descrizione-vino" placeholder="Es. Fresco e minerale, profumi floreali" rows="2"></textarea>
-
-        <label class="admin__label">Produttore</label>
-        <input type="text" class="admin__input" id="input-produttore-vino" placeholder="Es. Cave Mont Blanc">
 
         <label class="admin__label">Prezzo al calice (€)</label>
         <input type="number" class="admin__input" id="input-prezzo-vino" placeholder="Es. 8" min="0" step="0.5">
