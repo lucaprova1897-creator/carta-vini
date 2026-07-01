@@ -150,6 +150,20 @@ a { text-decoration: none; color: inherit; }
   align-items: center; text-align: center;
 }
 
+.hero__text-box {
+  background: rgba(13, 10, 8, 0.52);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 16px;
+  border: 1px solid rgba(201, 166, 107, 0.2);
+  padding: 1.6rem 1.8rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+}
+
 /* --- Brand / Logo --- */
 
 .brand {
