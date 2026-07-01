@@ -105,7 +105,7 @@ function caricaDati() {
   })
   .catch(function () {
     var lista = document.getElementById('proposte-lista');
-    if (lista) lista.innerHTML = '<div class="proposte__vuoto"><p>⚠️</p><p>Impossibile caricare i dati. Riprova più tardi.</p></div>';
+    if (lista) lista.innerHTML = '<div class="proposte__vuoto"><p>⚠️</p><p>Impossibile caricare i dati.</p></div>';
     var caliceLista = document.getElementById('calice-lista');
     if (caliceLista) caliceLista.innerHTML = '';
     var caliceVuoto = document.getElementById('calice-vuoto');
@@ -152,6 +152,7 @@ function renderProposte(proposte) {
 
 /* ---------------------------------------------------------
    RENDER VINI AL CALICE
+   Ordine: produttore → nome → vitigno → descrizione
    --------------------------------------------------------- */
 function renderViniCalice(vini) {
   var lista = document.getElementById('calice-lista');
@@ -167,11 +168,9 @@ function renderViniCalice(vini) {
   }
 
   if (vuoto) vuoto.style.display = 'none';
-  lista.style.display = 'flex';
   lista.style.flexDirection = 'column';
   lista.style.gap = '1rem';
 
-  /* Raggruppa per categoria nell'ordine desiderato */
   ORDINE_CATEGORIE_VINI.forEach(function (categoria) {
     var gruppo = vini.filter(function (v) { return v.categoria === categoria; });
     if (gruppo.length === 0) return;
@@ -189,11 +188,19 @@ function renderViniCalice(vini) {
       vinoEl.className = 'calice__vino';
       vinoEl.innerHTML =
         '<div class="calice__vino-info">' +
+          /* Produttore + regione in cima */
+          '<div class="calice__vino-produttore">' +
+            vino.produttore +
+            (vino.regione ? ' <span class="calice__vino-regione">· ' + vino.regione + '</span>' : '') +
+          '</div>' +
+          /* Tipologia */
           '<div class="calice__vino-tipo">' + vino.tipologia + '</div>' +
+          /* Nome del vino — elemento principale */
           '<div class="calice__vino-nome">' + vino.nome + '</div>' +
+          /* Vitigno in corsivo */
           (vino.vitigno ? '<div class="calice__vino-vitigno">' + vino.vitigno + '</div>' : '') +
+          /* Descrizione breve */
           (vino.descrizione ? '<div class="calice__vino-descrizione">' + vino.descrizione + '</div>' : '') +
-          '<div class="calice__vino-produttore">' + vino.produttore + '</div>' +
         '</div>' +
         '<div class="calice__vino-prezzo">€ ' + Number(vino.prezzo).toFixed(2) + '</div>';
       gruppoEl.appendChild(vinoEl);
