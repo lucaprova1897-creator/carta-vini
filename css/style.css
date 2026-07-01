@@ -111,17 +111,13 @@ a { text-decoration: none; color: inherit; }
 
 .hero::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+  position: absolute; inset: 0; z-index: 0;
   background: url('../bg-vini.jpg') center center / cover no-repeat;
 }
 
 .hero::after {
   content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+  position: absolute; inset: 0; z-index: 1;
   background:
     linear-gradient(
       to bottom,
@@ -292,6 +288,22 @@ a { text-decoration: none; color: inherit; }
 
 .calice__vino-info { flex: 1; min-width: 0; text-align: left; }
 
+/* Produttore — in evidenza, prima del nome */
+.calice__vino-produttore {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ivory);
+  margin-bottom: 0.1rem;
+}
+
+/* Regione — accanto al produttore, in tono oro */
+.calice__vino-regione {
+  font-size: 0.68rem;
+  color: rgba(201,166,107,0.8);
+  font-weight: 400;
+}
+
+/* Tipologia */
 .calice__vino-tipo {
   font-size: 0.58rem;
   font-weight: 600;
@@ -301,6 +313,7 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 0.15rem;
 }
 
+/* Nome del vino — elemento principale */
 .calice__vino-nome {
   font-family: var(--font-display);
   font-size: 0.95rem;
@@ -309,6 +322,7 @@ a { text-decoration: none; color: inherit; }
   line-height: 1.2;
 }
 
+/* Vitigno */
 .calice__vino-vitigno {
   font-size: 0.72rem;
   color: var(--ivory-dim);
@@ -316,6 +330,7 @@ a { text-decoration: none; color: inherit; }
   margin-top: 0.1rem;
 }
 
+/* Descrizione */
 .calice__vino-descrizione {
   font-size: 0.72rem;
   color: rgba(242,233,220,0.6);
@@ -323,13 +338,7 @@ a { text-decoration: none; color: inherit; }
   margin-top: 0.2rem;
 }
 
-.calice__vino-produttore {
-  font-size: 0.68rem;
-  color: rgba(201,166,107,0.65);
-  margin-top: 0.15rem;
-  font-weight: 500;
-}
-
+/* Prezzo */
 .calice__vino-prezzo {
   font-family: var(--font-display);
   font-size: 1rem;
@@ -444,7 +453,10 @@ a { text-decoration: none; color: inherit; }
   display: flex; flex-direction: column; gap: 0.3rem;
 }
 
-.piatto__top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.piatto__top {
+  display: flex; align-items: baseline;
+  justify-content: space-between; gap: 0.5rem;
+}
 
 .piatto__categoria {
   font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em;
