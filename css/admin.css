@@ -1,5 +1,5 @@
 /* =========================================================
-   LOU TCHAPPÉ — Admin Proposte del Giorno
+   LOU TCHAPPÉ — Admin Proposte del Giorno + Vini al Calice
    ========================================================= */
 
 :root {
@@ -103,6 +103,7 @@ body {
 
 .admin { max-width: 600px; margin: 0 auto; padding: 0 0 3rem; }
 
+/* Header */
 .admin__header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 1rem 1.2rem;
@@ -119,8 +120,15 @@ body {
   border-radius: 50%; background: var(--paper); padding: 5px;
 }
 
-.admin__titolo { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; color: var(--ivory); }
-.admin__data { font-size: 0.7rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; }
+.admin__titolo {
+  font-family: var(--font-display); font-size: 1.1rem;
+  font-weight: 500; color: var(--ivory);
+}
+
+.admin__data {
+  font-size: 0.7rem; color: var(--gold);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
 
 .admin__logout {
   background: none; border: 1px solid var(--gold-soft);
@@ -131,7 +139,57 @@ body {
 }
 .admin__logout:hover { background: var(--surface-hover); color: var(--ivory); }
 
-/* Form */
+/* =========================================================
+   TAB ADMIN — Piatti / Vini
+   ========================================================= */
+
+.admin__tabs {
+  display: flex;
+  border-bottom: 1px solid var(--gold-soft);
+  background: rgba(21,16,13,0.7);
+  position: sticky;
+  top: 62px;
+  z-index: 9;
+}
+
+.admin__tab {
+  flex: 1;
+  padding: 0.85rem 0.5rem;
+  background: none;
+  border: none;
+  color: var(--ivory-dim);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.25s var(--ease);
+}
+
+.admin__tab::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 15%; right: 15%;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 2px 2px 0 0;
+  transform: scaleX(0);
+  transition: transform 0.25s var(--ease);
+}
+
+.admin__tab--active { color: var(--ivory); }
+.admin__tab--active::after { transform: scaleX(1); }
+
+/* =========================================================
+   SEZIONI
+   ========================================================= */
+
+.admin__section { padding-top: 0; }
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
 .admin__form-box {
   margin: 1.2rem; background: var(--surface);
   border: 1px solid var(--gold-soft);
@@ -162,9 +220,13 @@ body {
 .admin__input:focus { border-color: var(--gold); }
 .admin__input option { background: #2E1F18; color: var(--ivory); }
 
-.admin__textarea { resize: vertical; min-height: 80px; }
+.admin__textarea { resize: vertical; min-height: 70px; }
 
 .admin__form-btns { display: flex; gap: 0.7rem; margin-top: 0.4rem; }
+
+/* =========================================================
+   BOTTONI
+   ========================================================= */
 
 .admin__btn {
   flex: 1; padding: 0.85rem 1rem;
@@ -191,6 +253,10 @@ body {
 }
 .admin__btn--svuota:hover { background: rgba(255,107,107,0.1); }
 
+/* =========================================================
+   FEEDBACK
+   ========================================================= */
+
 .admin__feedback {
   font-size: 0.85rem; text-align: center;
   padding: 0.5rem; border-radius: 6px;
@@ -198,7 +264,10 @@ body {
 .admin__feedback--ok { color: #6BCB77; background: rgba(107,203,119,0.1); }
 .admin__feedback--err { color: #FF6B6B; background: rgba(255,107,107,0.1); }
 
-/* Lista admin */
+/* =========================================================
+   LISTA PIATTI / VINI
+   ========================================================= */
+
 .admin__lista-box { margin: 0 1.2rem; }
 
 .admin__lista-header {
@@ -208,7 +277,10 @@ body {
 
 .admin__lista { display: flex; flex-direction: column; gap: 0.7rem; }
 
-.admin__loading { text-align: center; color: var(--ivory-dim); padding: 2rem 0; font-size: 0.9rem; }
+.admin__loading {
+  text-align: center; color: var(--ivory-dim);
+  padding: 2rem 0; font-size: 0.9rem;
+}
 
 .admin__piatto {
   background: var(--surface);
@@ -218,12 +290,33 @@ body {
 }
 
 .admin__piatto-info { flex: 1; min-width: 0; }
-.admin__piatto-cat { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.25rem; }
-.admin__piatto-nome { font-family: var(--font-display); font-size: 0.98rem; font-weight: 500; color: var(--ivory); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.admin__piatto-desc { font-size: 0.78rem; color: var(--ivory-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.admin__piatto-prezzo { font-family: var(--font-display); font-size: 1.05rem; color: var(--ivory); white-space: nowrap; margin-top: 0.1rem; }
 
-.admin__piatto-azioni { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
+.admin__piatto-cat {
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.25rem;
+}
+
+.admin__piatto-nome {
+  font-family: var(--font-display); font-size: 0.98rem;
+  font-weight: 500; color: var(--ivory);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.admin__piatto-desc {
+  font-size: 0.78rem; color: var(--ivory-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.admin__piatto-prezzo {
+  font-family: var(--font-display); font-size: 1.05rem;
+  color: var(--ivory); white-space: nowrap; margin-top: 0.1rem;
+}
+
+.admin__piatto-azioni {
+  display: flex; flex-direction: column;
+  gap: 0.4rem; flex-shrink: 0;
+}
 
 .admin__piatto-btn {
   width: 34px; height: 34px; border: none; border-radius: 8px;
@@ -231,9 +324,18 @@ body {
   display: flex; align-items: center; justify-content: center;
   transition: background 0.2s;
 }
-.admin__piatto-btn--modifica { background: rgba(201,166,107,0.15); color: var(--gold); }
+
+.admin__piatto-btn--modifica {
+  background: rgba(201,166,107,0.15); color: var(--gold);
+}
 .admin__piatto-btn--modifica:hover { background: rgba(201,166,107,0.25); }
-.admin__piatto-btn--elimina { background: rgba(255,107,107,0.12); color: #FF6B6B; }
+
+.admin__piatto-btn--elimina {
+  background: rgba(255,107,107,0.12); color: #FF6B6B;
+}
 .admin__piatto-btn--elimina:hover { background: rgba(255,107,107,0.22); }
 
-.admin__vuoto { text-align: center; padding: 2rem; color: var(--ivory-dim); font-size: 0.88rem; line-height: 1.8; }
+.admin__vuoto {
+  text-align: center; padding: 2rem;
+  color: var(--ivory-dim); font-size: 0.88rem; line-height: 1.8;
+}
