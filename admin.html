@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Lou Tchappé · Admin Proposte</title>
+  <title>Lou Tchappé · Admin</title>
   <meta name="theme-color" content="#1A1410">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,7 @@
     <div class="login__box">
       <img src="logo.png" alt="Lou Tchappé" class="login__logo">
       <h1 class="login__titolo">Area Gestione</h1>
-      <p class="login__sub">Lou Tchappé · Proposte del Giorno</p>
+      <p class="login__sub">Lou Tchappé · Gestione Menu</p>
       <input
         type="password"
         id="password-input"
@@ -40,53 +40,124 @@
       <div class="admin__header-left">
         <img src="logo.png" alt="Lou Tchappé" class="admin__logo">
         <div>
-          <h1 class="admin__titolo">Proposte del Giorno</h1>
+          <h1 class="admin__titolo">Gestione Menu</h1>
           <p class="admin__data" id="admin-data"></p>
         </div>
       </div>
       <button class="admin__logout" id="logout-btn" title="Esci">✕</button>
     </header>
 
-    <!-- FORM -->
-    <div class="admin__form-box" id="form-box">
-      <h2 class="admin__form-titolo" id="form-titolo">Aggiungi Piatto</h2>
-
-      <label class="admin__label">Categoria</label>
-      <select class="admin__input" id="input-categoria">
-        <option value="Antipasto">Antipasto</option>
-        <option value="Primo">Primo</option>
-        <option value="Secondo">Secondo</option>
-        <option value="Contorno">Contorno</option>
-        <option value="Dessert">Dessert</option>
-        <option value="Speciale">Speciale</option>
-      </select>
-
-      <label class="admin__label">Nome del piatto</label>
-      <input type="text" class="admin__input" id="input-nome" placeholder="Es. Zuppa valpellinentze">
-
-      <label class="admin__label">Descrizione</label>
-      <textarea class="admin__input admin__textarea" id="input-descrizione" placeholder="Es. Zuppa tipica valdostana con pane, verza e fontina" rows="3"></textarea>
-
-      <label class="admin__label">Prezzo (€)</label>
-      <input type="number" class="admin__input" id="input-prezzo" placeholder="Es. 12" min="0" step="0.5">
-
-      <div class="admin__form-btns">
-        <button class="admin__btn admin__btn--salva" id="btn-salva">💾 Salva</button>
-        <button class="admin__btn admin__btn--annulla" id="btn-annulla" style="display:none">Annulla</button>
-      </div>
-
-      <p class="admin__feedback" id="feedback" style="display:none"></p>
+    <!-- TAB ADMIN: Piatti / Vini -->
+    <div class="admin__tabs">
+      <button class="admin__tab admin__tab--active" data-section="piatti">
+        🍽️ Piatti del Giorno
+      </button>
+      <button class="admin__tab" data-section="vini">
+        🍷 Vini al Calice
+      </button>
     </div>
 
-    <!-- LISTA PIATTI -->
-    <div class="admin__lista-box">
-      <div class="admin__lista-header">
-        <h2 class="admin__form-titolo">Piatti di Oggi</h2>
-        <button class="admin__btn admin__btn--svuota" id="btn-svuota">🗑️ Svuota tutto</button>
+    <!-- ===== SEZIONE PIATTI ===== -->
+    <div class="admin__section" id="section-piatti">
+
+      <div class="admin__form-box" id="form-box-piatti">
+        <h2 class="admin__form-titolo" id="form-titolo-piatti">Aggiungi Piatto</h2>
+
+        <label class="admin__label">Categoria</label>
+        <select class="admin__input" id="input-categoria">
+          <option value="Antipasto">Antipasto</option>
+          <option value="Primo">Primo</option>
+          <option value="Secondo">Secondo</option>
+          <option value="Contorno">Contorno</option>
+          <option value="Dessert">Dessert</option>
+          <option value="Speciale">Speciale</option>
+        </select>
+
+        <label class="admin__label">Nome del piatto</label>
+        <input type="text" class="admin__input" id="input-nome-piatto" placeholder="Es. Zuppa valpellinentze">
+
+        <label class="admin__label">Descrizione</label>
+        <textarea class="admin__input admin__textarea" id="input-descrizione-piatto" placeholder="Breve descrizione del piatto" rows="3"></textarea>
+
+        <label class="admin__label">Prezzo (€)</label>
+        <input type="number" class="admin__input" id="input-prezzo-piatto" placeholder="Es. 12" min="0" step="0.5">
+
+        <div class="admin__form-btns">
+          <button class="admin__btn admin__btn--salva" id="btn-salva-piatto">💾 Salva</button>
+          <button class="admin__btn admin__btn--annulla" id="btn-annulla-piatto" style="display:none">Annulla</button>
+        </div>
+
+        <p class="admin__feedback" id="feedback-piatti" style="display:none"></p>
       </div>
-      <div class="admin__lista" id="admin-lista">
-        <p class="admin__loading">Caricamento...</p>
+
+      <div class="admin__lista-box">
+        <div class="admin__lista-header">
+          <h2 class="admin__form-titolo">Piatti di Oggi</h2>
+          <button class="admin__btn admin__btn--svuota" id="btn-svuota-piatti">🗑️ Svuota</button>
+        </div>
+        <div class="admin__lista" id="admin-lista-piatti">
+          <p class="admin__loading">Caricamento...</p>
+        </div>
       </div>
+
+    </div>
+
+    <!-- ===== SEZIONE VINI ===== -->
+    <div class="admin__section" id="section-vini" style="display:none">
+
+      <div class="admin__form-box" id="form-box-vini">
+        <h2 class="admin__form-titolo" id="form-titolo-vini">Aggiungi Vino al Calice</h2>
+
+        <label class="admin__label">Categoria</label>
+        <select class="admin__input" id="input-categoria-vino">
+          <option value="Bollicine">Bollicine</option>
+          <option value="Bianchi">Bianchi</option>
+          <option value="Rosati">Rosati</option>
+          <option value="Rossi">Rossi</option>
+        </select>
+
+        <label class="admin__label">Tipologia</label>
+        <select class="admin__input" id="input-tipologia-vino">
+          <option value="Spumante">Spumante</option>
+          <option value="Bianco">Bianco</option>
+          <option value="Rosé">Rosé</option>
+          <option value="Rosso">Rosso</option>
+          <option value="Dolce">Dolce</option>
+        </select>
+
+        <label class="admin__label">Nome del vino</label>
+        <input type="text" class="admin__input" id="input-nome-vino" placeholder="Es. Blanc de Morgex et de La Salle">
+
+        <label class="admin__label">Vitigno</label>
+        <input type="text" class="admin__input" id="input-vitigno-vino" placeholder="Es. Prié Blanc">
+
+        <label class="admin__label">Descrizione breve</label>
+        <textarea class="admin__input admin__textarea" id="input-descrizione-vino" placeholder="Es. Fresco e minerale, profumi floreali" rows="2"></textarea>
+
+        <label class="admin__label">Produttore</label>
+        <input type="text" class="admin__input" id="input-produttore-vino" placeholder="Es. Cave Mont Blanc">
+
+        <label class="admin__label">Prezzo al calice (€)</label>
+        <input type="number" class="admin__input" id="input-prezzo-vino" placeholder="Es. 8" min="0" step="0.5">
+
+        <div class="admin__form-btns">
+          <button class="admin__btn admin__btn--salva" id="btn-salva-vino">💾 Salva</button>
+          <button class="admin__btn admin__btn--annulla" id="btn-annulla-vino" style="display:none">Annulla</button>
+        </div>
+
+        <p class="admin__feedback" id="feedback-vini" style="display:none"></p>
+      </div>
+
+      <div class="admin__lista-box">
+        <div class="admin__lista-header">
+          <h2 class="admin__form-titolo">Vini al Calice</h2>
+          <button class="admin__btn admin__btn--svuota" id="btn-svuota-vini">🗑️ Svuota</button>
+        </div>
+        <div class="admin__lista" id="admin-lista-vini">
+          <p class="admin__loading">Caricamento...</p>
+        </div>
+      </div>
+
     </div>
 
   </div>
