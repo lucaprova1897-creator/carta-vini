@@ -64,7 +64,9 @@ function inizializzaAdmin() {
   caricaProposte();
 
   document.getElementById('btn-salva').addEventListener('click', salva);
-  document.getElementById('btn-annulla').addEventListener('click', function () { resetForm(); });
+  document.getElementById('btn-annulla').addEventListener('click', function () {
+    resetForm();
+  });
   document.getElementById('btn-svuota').addEventListener('click', function () {
     if (confirm('Sei sicuro di voler eliminare tutte le proposte di oggi?')) {
       stato.proposte = [];
@@ -152,7 +154,9 @@ function salva() {
   if (!nome) { mostraFeedback('Inserisci il nome del piatto', 'err'); return; }
   if (isNaN(prezzo) || prezzo < 0) { mostraFeedback('Inserisci un prezzo valido', 'err'); return; }
 
-  if (stato.modificandoId !== null) {
+  var eraModifica = stato.modificandoId !== null;
+
+  if (eraModifica) {
     stato.proposte = stato.proposte.map(function (p) {
       if (p.id === stato.modificandoId) {
         return { id: p.id, categoria: categoria, nome: nome, descrizione: descrizione, prezzo: prezzo };
@@ -169,7 +173,6 @@ function salva() {
     });
   }
 
-  var eramodifica = stato.modificandoId !== null;
   salvaRemoto().then(function () {
     renderListaAdmin();
     resetForm();
