@@ -71,7 +71,7 @@ function inizializzaAdmin() {
 }
 
 /* ---------------------------------------------------------
-   TAB ADMIN (Piatti / Vini)
+   TAB ADMIN
    --------------------------------------------------------- */
 function inizializzaTabAdmin() {
   var tabs = document.querySelectorAll('.admin__tab');
@@ -138,9 +138,7 @@ function salvaRemoto() {
 
 function inizializzaFormPiatti() {
   document.getElementById('btn-salva-piatto').addEventListener('click', salvaPiatto);
-  document.getElementById('btn-annulla-piatto').addEventListener('click', function () {
-    resetFormPiatti();
-  });
+  document.getElementById('btn-annulla-piatto').addEventListener('click', resetFormPiatti);
   document.getElementById('btn-svuota-piatti').addEventListener('click', function () {
     if (confirm('Eliminare tutti i piatti di oggi?')) {
       stato.proposte = [];
@@ -211,13 +209,8 @@ function renderListaPiatti() {
         '<button class="admin__piatto-btn admin__piatto-btn--elimina" title="Elimina">🗑️</button>' +
       '</div>';
 
-    card.querySelector('.admin__piatto-btn--modifica').addEventListener('click', function () {
-      modificaPiatto(piatto.id);
-    });
-    card.querySelector('.admin__piatto-btn--elimina').addEventListener('click', function () {
-      eliminaPiatto(piatto.id);
-    });
-
+    card.querySelector('.admin__piatto-btn--modifica').addEventListener('click', function () { modificaPiatto(piatto.id); });
+    card.querySelector('.admin__piatto-btn--elimina').addEventListener('click', function () { eliminaPiatto(piatto.id); });
     listaEl.appendChild(card);
   });
 }
@@ -259,9 +252,7 @@ function resetFormPiatti() {
 
 function inizializzaFormVini() {
   document.getElementById('btn-salva-vino').addEventListener('click', salvaVino);
-  document.getElementById('btn-annulla-vino').addEventListener('click', function () {
-    resetFormVini();
-  });
+  document.getElementById('btn-annulla-vino').addEventListener('click', resetFormVini);
   document.getElementById('btn-svuota-vini').addEventListener('click', function () {
     if (confirm('Eliminare tutti i vini al calice?')) {
       stato.vini = [];
@@ -280,6 +271,7 @@ function salvaVino() {
   var vitigno = document.getElementById('input-vitigno-vino').value.trim();
   var descrizione = document.getElementById('input-descrizione-vino').value.trim();
   var produttore = document.getElementById('input-produttore-vino').value.trim();
+  var regione = document.getElementById('input-regione-vino').value.trim();
   var prezzo = parseFloat(document.getElementById('input-prezzo-vino').value);
 
   if (!nome) { mostraFeedback('feedback-vini', 'Inserisci il nome del vino', 'err'); return; }
@@ -291,12 +283,12 @@ function salvaVino() {
   if (eraModifica) {
     stato.vini = stato.vini.map(function (v) {
       if (v.id === stato.modificandoVinoId) {
-        return { id: v.id, categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, prezzo: prezzo };
+        return { id: v.id, categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, regione: regione, prezzo: prezzo };
       }
       return v;
     });
   } else {
-    stato.vini.push({ id: Date.now(), categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, prezzo: prezzo });
+    stato.vini.push({ id: Date.now(), categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, regione: regione, prezzo: prezzo });
   }
 
   salvaRemoto().then(function () {
@@ -326,10 +318,10 @@ function renderListaVini() {
     card.className = 'admin__piatto';
     card.innerHTML =
       '<div class="admin__piatto-info">' +
-        '<div class="admin__piatto-cat">' + vino.categoria + ' · ' + vino.tipologia + '</div>' +
+        '<div class="admin__piatto-cat">' + vino.categoria + ' · ' + vino.tipologia + (vino.regione ? ' · ' + vino.regione : '') + '</div>' +
+        '<div class="admin__piatto-desc">' + vino.produttore + '</div>' +
         '<div class="admin__piatto-nome">' + vino.nome + '</div>' +
         (vino.vitigno ? '<div class="admin__piatto-desc">' + vino.vitigno + '</div>' : '') +
-        '<div class="admin__piatto-desc">' + vino.produttore + '</div>' +
         '<div class="admin__piatto-prezzo">€ ' + Number(vino.prezzo).toFixed(2) + '</div>' +
       '</div>' +
       '<div class="admin__piatto-azioni">' +
@@ -337,13 +329,8 @@ function renderListaVini() {
         '<button class="admin__piatto-btn admin__piatto-btn--elimina" title="Elimina">🗑️</button>' +
       '</div>';
 
-    card.querySelector('.admin__piatto-btn--modifica').addEventListener('click', function () {
-      modificaVino(vino.id);
-    });
-    card.querySelector('.admin__piatto-btn--elimina').addEventListener('click', function () {
-      eliminaVino(vino.id);
-    });
-
+    card.querySelector('.admin__piatto-btn--modifica').addEventListener('click', function () { modificaVino(vino.id); });
+    card.querySelector('.admin__piatto-btn--elimina').addEventListener('click', function () { eliminaVino(vino.id); });
     listaEl.appendChild(card);
   });
 }
@@ -358,6 +345,7 @@ function modificaVino(id) {
   document.getElementById('input-vitigno-vino').value = vino.vitigno || '';
   document.getElementById('input-descrizione-vino').value = vino.descrizione || '';
   document.getElementById('input-produttore-vino').value = vino.produttore;
+  document.getElementById('input-regione-vino').value = vino.regione || "Valle d'Aosta";
   document.getElementById('input-prezzo-vino').value = vino.prezzo;
   document.getElementById('form-titolo-vini').textContent = 'Modifica Vino';
   document.getElementById('btn-annulla-vino').style.display = 'block';
@@ -380,6 +368,7 @@ function resetFormVini() {
   document.getElementById('input-vitigno-vino').value = '';
   document.getElementById('input-descrizione-vino').value = '';
   document.getElementById('input-produttore-vino').value = '';
+  document.getElementById('input-regione-vino').value = "Valle d'Aosta";
   document.getElementById('input-prezzo-vino').value = '';
   document.getElementById('form-titolo-vini').textContent = 'Aggiungi Vino al Calice';
   document.getElementById('btn-annulla-vino').style.display = 'none';
