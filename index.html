@@ -12,9 +12,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
+
+  <!-- =========================================================
+       NOTIFICA MENU DI FERRAGOSTO
+       Appare automaticamente all'apertura, una volta per sessione.
+       Si chiude con la X o toccando fuori dall'immagine.
+       ========================================================= -->
+  <div class="ferragosto-overlay" id="ferragosto-overlay" style="display:none" aria-modal="true" role="dialog">
+    <div class="ferragosto-card">
+
+      <button class="ferragosto-close" id="ferragosto-close" aria-label="Chiudi">✕</button>
+
+      <div class="ferragosto-badge">
+        <span class="ferragosto-badge__testo">🌟 Evento Speciale</span>
+      </div>
+
+      <!-- Switch lingua -->
+      <div class="ferragosto-lang">
+        <button class="ferragosto-lang__btn ferragosto-lang__btn--active" data-lang="ita">ITA</button>
+        <button class="ferragosto-lang__btn" data-lang="ing">ENG</button>
+      </div>
+
+      <!-- Immagine menu — cliccabile per aprirla a schermo intero -->
+      <div class="ferragosto-img-box" id="ferragosto-img-box">
+        <img
+          src="ferragosto_ita.jpg"
+          alt="Menù di Ferragosto Lou Tchappé"
+          class="ferragosto-img"
+          id="ferragosto-img"
+        >
+        <div class="ferragosto-img-hint">👆 Tocca per ingrandire</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Viewer immagine a schermo intero -->
+  <div class="ferragosto-fullscreen" id="ferragosto-fullscreen" style="display:none">
+    <button class="ferragosto-fullscreen__close" id="ferragosto-fullscreen-close" aria-label="Chiudi">✕</button>
+    <img src="ferragosto_ita.jpg" alt="Menù di Ferragosto" class="ferragosto-fullscreen__img" id="ferragosto-fullscreen-img">
+  </div>
 
   <nav class="tabs" role="tablist">
     <button class="tabs__btn tabs__btn--active" role="tab" data-tab="vini" aria-selected="true">
@@ -35,7 +75,6 @@
 
         <div class="hero__content">
 
-          <!-- LOGO in cima -->
           <div class="brand" data-animate="fade-in">
             <div class="brand__badge">
               <img src="logo.png" alt="Lou Tchappé" class="brand__logo" width="120" height="120">
@@ -54,7 +93,6 @@
           <div class="divider" data-animate="fade-in" aria-hidden="true"></div>
 
           
-            <a
             href="CartaVini.pdf"
             target="_blank"
             rel="noopener noreferrer"
@@ -126,6 +164,6 @@
 
   </div>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
