@@ -13,7 +13,6 @@ var ORDINE_CATEGORIE_VINI = ['Bollicine', 'Bianchi', 'Rosati', 'Rossi'];
 
 /* ---------------------------------------------------------
    NOTIFICA FERRAGOSTO
-   Appare una volta per sessione, con switch ITA/ENG
    --------------------------------------------------------- */
 function inizializzaFerragosto() {
   var overlay = document.getElementById('ferragosto-overlay');
@@ -24,16 +23,30 @@ function inizializzaFerragosto() {
   var fullscreenImg = document.getElementById('ferragosto-fullscreen-img');
   var fullscreenClose = document.getElementById('ferragosto-fullscreen-close');
   var langBtns = document.querySelectorAll('.ferragosto-lang__btn');
+  var riapriBtn = document.getElementById('ferragosto-btn');
 
   if (!overlay) return;
 
-  /* Mostra solo una volta per sessione */
-  if (sessionStorage.getItem('ferragosto-visto')) return;
+  /* Mostra il bottone di riapertura */
+  function mostraBtnRiapri() {
+    if (riapriBtn) {
+      riapriBtn.style.display = 'block';
+      window.setTimeout(function () {
+        riapriBtn.classList.remove('nascosto');
+      }, 50);
+    }
+  }
 
-  /* Mostra dopo 800ms per non sovrapporsi alle animazioni */
-  window.setTimeout(function () {
+  /* Apri overlay */
+  function apriOverlay() {
+    overlay.style.opacity = '0';
     overlay.style.display = 'flex';
-  }, 800);
+    window.setTimeout(function () {
+      overlay.style.opacity = '1';
+      overlay.style.transition = 'opacity 0.4s ease';
+    }, 10);
+    if (riapriBtn) riapriBtn.classList.add('nascosto');
+  }
 
   /* Chiudi overlay */
   function chiudiOverlay() {
@@ -45,8 +58,22 @@ function inizializzaFerragosto() {
       overlay.style.transition = '';
     }, 300);
     sessionStorage.setItem('ferragosto-visto', '1');
+    mostraBtnRiapri();
   }
 
+  /* Prima apertura automatica */
+  if (!sessionStorage.getItem('ferragosto-visto')) {
+    window.setTimeout(apriOverlay, 800);
+  } else {
+    mostraBtnRiapri();
+  }
+
+  /* Bottone riapertura */
+  if (riapriBtn) {
+    riapriBtn.addEventListener('click', apriOverlay);
+  }
+
+  /* Chiudi con X */
   btnClose.addEventListener('click', chiudiOverlay);
 
   /* Chiudi cliccando fuori dalla card */
@@ -54,13 +81,28 @@ function inizializzaFerragosto() {
     if (e.target === overlay) chiudiOverlay();
   });
 
+  /* Nascondi bottone quando si va sulle proposte, rimostra tornando ai vini */
+  var tabProposte = document.querySelector('[data-tab="proposte"]');
+  var tabVini = document.querySelector('[data-tab="vini"]');
+  if (tabProposte && riapriBtn) {
+    tabProposte.addEventListener('click', function () {
+      riapriBtn.classList.add('nascosto');
+    });
+  }
+  if (tabVini && riapriBtn) {
+    tabVini.addEventListener('click', function () {
+      if (!overlay.style.display || overlay.style.display === 'none') {
+        riapriBtn.classList.remove('nascosto');
+      }
+    });
+  }
+
   /* Switch lingua ITA/ENG */
   langBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
       langBtns.forEach(function (b) { b.classList.remove('ferragosto-lang__btn--active'); });
       this.classList.add('ferragosto-lang__btn--active');
-      var lang = this.dataset.lang;
-      var src = lang === 'ita' ? 'ferragosto_ita.jpg' : 'ferragosto_ing.jpg';
+      var src = this.dataset.lang === 'ita' ? 'ferragosto_ita.jpg' : 'ferragosto_ing.jpg';
       img.src = src;
       fullscreenImg.src = src;
     });
