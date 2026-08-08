@@ -671,6 +671,36 @@ a { text-decoration: none; color: inherit; }
 }
 
 .hint-btn.nascosto {
+   /* Bottone riapertura Ferragosto */
+.ferragosto-btn {
+  position: fixed;
+  bottom: calc(var(--hint-h) + 0.8rem);
+  left: 1rem;
+  z-index: 199;
+  background: rgba(13,10,8,0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s, opacity 0.25s;
+}
+
+.ferragosto-btn:hover {
+  background: rgba(201,166,107,0.2);
+}
+
+.ferragosto-btn.nascosto {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+}
   transform: translateY(100%);
   opacity: 0; pointer-events: none;
 }
