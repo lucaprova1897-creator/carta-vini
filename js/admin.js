@@ -132,7 +132,7 @@ function traduciPiatto(categoria, nome, descrizione) {
     'Mantieni un registro appropriato per un ristorante raffinato di montagna. ' +
     'Se la descrizione è vuota, metti stringa vuota.';
 
-    return fetch('https://script.google.com/macros/s/AKfycbzBrdXWGpx-2w_G33Njojh4Z-iVQlH0Goi9ooqAN-fAuCyBTklYtaIU59YOMfKM1KfPVg/exec', {
+    return fetch('https://script.google.com/macros/s/AKfycbztx7is7_vJNvw3k6UX2DybjYSl17JclhEivcV3XtDQcOssjn62wIsd5-Lt4ob7dcATww/exec', {
     method: 'POST',
     headers: {
       'Content-Type': 'text/plain'
