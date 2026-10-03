@@ -1,15 +1,13 @@
-/* v3 */
 /* =========================================================
    LOU TCHAPPÉ — admin.js
-   Gestione piatti del giorno con traduzione automatica FR/EN
+   Gestione piatti del giorno con traduzioni manuali FR/EN
    ========================================================= */
 
 var CONFIG = {
   PASSWORD: 'LouTchappe26',
   API_KEY: '$2a$10$aULdtLYQzrRZ6f7c/SMLjOUDoWnF142XoYjYl9jgdoqCKAf4hPoaa',
   BIN_ID: '6a441993da38895dfe17d492',
-  BASE_URL: 'https://api.jsonbin.io/v3/b',
-  PROXY_URL: 'https://lou-tchappe-proxy.netlify.app/.netlify/functions/translate'
+  BASE_URL: 'https://api.jsonbin.io/v3/b'
 };
 
 var ORDINE_PIATTI = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
@@ -88,7 +86,7 @@ function caricaDati() {
 }
 
 /* ---------------------------------------------------------
-   SALVA REMOTO — legge prima per non perdere altri dati
+   SALVA REMOTO
    --------------------------------------------------------- */
 function salvaRemoto() {
   return fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID + '/latest', {
@@ -110,52 +108,6 @@ function salvaRemoto() {
   .then(function (res) {
     if (!res.ok) throw new Error('Errore ' + res.status);
     return res.json();
-  });
-}
-
-/* ---------------------------------------------------------
-   TRADUZIONE CON CLAUDE via Netlify proxy
-   --------------------------------------------------------- */
-function traduciPiatto(categoria, nome, descrizione) {
-  var prompt =
-    'Traduci i seguenti campi di un piatto di ristorante italiano in francese e in inglese. ' +
-    'Rispondi SOLO con un oggetto JSON valido, senza markdown, senza testo aggiuntivo.\n\n' +
-    'Originale (italiano):\n' +
-    'Categoria: ' + categoria + '\n' +
-    'Nome: ' + nome + '\n' +
-    'Descrizione: ' + (descrizione || '') + '\n\n' +
-        'Formato risposta (solo JSON):\n' +
-    '{"categoria_fr":"...","nome_fr":"...","descrizione_fr":"...","categoria_en":"...","nome_en":"...","descrizione_en":"..."}\n\n' +
-    'Mantieni registro appropriato per ristorante raffinato di montagna. Se descrizione vuota metti stringa vuota.';
-
-  return fetch(CONFIG.PROXY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 400,
-      messages: [{ role: 'user', content: prompt }]
-    })
-  })
-   .then(function (res) {
-    console.log('Status proxy:', res.status);
-    return res.text();
-  })
-  .then(function (testo) {
-    console.log('Testo grezzo proxy:', testo);
-    var data = JSON.parse(testo);
-    if (!data || !data.content || !data.content[0] || !data.content[0].text) {
-      throw new Error('Risposta non valida: ' + JSON.stringify(data));
-    }
-    var testo = data.content[0].text.trim().replace(/```json|```/g, '').trim();
-    return JSON.parse(testo);
-  })
-  .catch(function (err) {
-    console.warn('Traduzione fallita:', err);
-    return {
-      categoria_fr: categoria, nome_fr: nome, descrizione_fr: descrizione || '',
-      categoria_en: categoria, nome_en: nome, descrizione_en: descrizione || ''
-    };
   });
 }
 
@@ -181,6 +133,12 @@ function salvaPiatto() {
   var categoria = document.getElementById('input-categoria').value.trim();
   var nome = document.getElementById('input-nome-piatto').value.trim();
   var descrizione = document.getElementById('input-descrizione-piatto').value.trim();
+  var categoria_fr = document.getElementById('input-categoria-fr').value.trim();
+  var nome_fr = document.getElementById('input-nome-fr').value.trim();
+  var descrizione_fr = document.getElementById('input-descrizione-fr').value.trim();
+  var categoria_en = document.getElementById('input-categoria-en').value.trim();
+  var nome_en = document.getElementById('input-nome-en').value.trim();
+  var descrizione_en = document.getElementById('input-descrizione-en').value.trim();
   var prezzo = parseFloat(document.getElementById('input-prezzo-piatto').value);
 
   if (!nome) { mostraFeedback('feedback-piatti', 'Inserisci il nome del piatto', 'err'); return; }
@@ -190,39 +148,35 @@ function salvaPiatto() {
   var eraModifica = idModifica !== null;
   var idPiatto = eraModifica ? idModifica : Date.now();
 
-  mostraFeedback('feedback-piatti', '🔄 Traduzione in corso...', 'ok');
+  var piatto = {
+    id: idPiatto,
+    categoria: categoria,
+    categoria_fr: categoria_fr || categoria,
+    categoria_en: categoria_en || categoria,
+    nome: nome,
+    nome_fr: nome_fr || nome,
+    nome_en: nome_en || nome,
+    descrizione: descrizione,
+    descrizione_fr: descrizione_fr || descrizione,
+    descrizione_en: descrizione_en || descrizione,
+    prezzo: prezzo
+  };
 
-  traduciPiatto(categoria, nome, descrizione).then(function (traduzioni) {
-    var piatto = {
-      id: idPiatto,
-      categoria: categoria,
-      categoria_fr: traduzioni.categoria_fr || categoria,
-      categoria_en: traduzioni.categoria_en || categoria,
-      nome: nome,
-      nome_fr: traduzioni.nome_fr || nome,
-      nome_en: traduzioni.nome_en || nome,
-      descrizione: descrizione,
-      descrizione_fr: traduzioni.descrizione_fr || descrizione,
-      descrizione_en: traduzioni.descrizione_en || descrizione,
-      prezzo: prezzo
-    };
+  if (eraModifica) {
+    stato.proposte = stato.proposte.map(function (p) {
+      return p.id === idModifica ? piatto : p;
+    });
+  } else {
+    stato.proposte.push(piatto);
+  }
 
-    if (eraModifica) {
-      stato.proposte = stato.proposte.map(function (p) {
-        return p.id === idModifica ? piatto : p;
-      });
-    } else {
-      stato.proposte.push(piatto);
-    }
+  mostraFeedback('feedback-piatti', '💾 Salvataggio...', 'ok');
 
-    return salvaRemoto();
-  })
-  .then(function () {
+  salvaRemoto().then(function () {
     renderListaPiatti();
     resetFormPiatti();
-    mostraFeedback('feedback-piatti', eraModifica ? 'Piatto aggiornato ✓' : 'Piatto aggiunto ✓ (tradotto FR/EN)', 'ok');
-  })
-  .catch(function () {
+    mostraFeedback('feedback-piatti', eraModifica ? 'Piatto aggiornato ✓' : 'Piatto aggiunto ✓', 'ok');
+  }).catch(function () {
     mostraFeedback('feedback-piatti', 'Errore di salvataggio. Riprova.', 'err');
   });
 }
@@ -272,6 +226,12 @@ function modificaPiatto(id) {
   document.getElementById('input-categoria').value = piatto.categoria;
   document.getElementById('input-nome-piatto').value = piatto.nome;
   document.getElementById('input-descrizione-piatto').value = piatto.descrizione || '';
+  document.getElementById('input-categoria-fr').value = piatto.categoria_fr || '';
+  document.getElementById('input-nome-fr').value = piatto.nome_fr || '';
+  document.getElementById('input-descrizione-fr').value = piatto.descrizione_fr || '';
+  document.getElementById('input-categoria-en').value = piatto.categoria_en || '';
+  document.getElementById('input-nome-en').value = piatto.nome_en || '';
+  document.getElementById('input-descrizione-en').value = piatto.descrizione_en || '';
   document.getElementById('input-prezzo-piatto').value = piatto.prezzo;
   document.getElementById('form-titolo-piatti').textContent = 'Modifica Piatto';
   document.getElementById('btn-annulla-piatto').style.display = 'block';
@@ -291,6 +251,12 @@ function resetFormPiatti() {
   document.getElementById('input-categoria').value = 'Antipasto';
   document.getElementById('input-nome-piatto').value = '';
   document.getElementById('input-descrizione-piatto').value = '';
+  document.getElementById('input-categoria-fr').value = '';
+  document.getElementById('input-nome-fr').value = '';
+  document.getElementById('input-descrizione-fr').value = '';
+  document.getElementById('input-categoria-en').value = '';
+  document.getElementById('input-nome-en').value = '';
+  document.getElementById('input-descrizione-en').value = '';
   document.getElementById('input-prezzo-piatto').value = '';
   document.getElementById('form-titolo-piatti').textContent = 'Aggiungi Piatto';
   document.getElementById('btn-annulla-piatto').style.display = 'none';
@@ -305,7 +271,7 @@ function mostraFeedback(elId, messaggio, tipo) {
   el.textContent = messaggio;
   el.className = 'admin__feedback admin__feedback--' + tipo;
   el.style.display = 'block';
-  window.setTimeout(function () { el.style.display = 'none'; }, 4000);
+  window.setTimeout(function () { el.style.display = 'none'; }, 3000);
 }
 
 /* ---------------------------------------------------------
