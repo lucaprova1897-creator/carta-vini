@@ -325,8 +325,9 @@ function salvaVino() {
   if (!produttore) { mostraFeedback('feedback-vini', 'Inserisci il produttore', 'err'); return; }
   if (isNaN(prezzo) || prezzo < 0) { mostraFeedback('feedback-vini', 'Inserisci un prezzo valido', 'err'); return; }
 
-  var eraModifica = stato.modificandoVinoId !== null;
-  var idVino = eraModifica ? stato.modificandoVinoId : Date.now();
+   var idModifica = stato.modificandoVinoId;
+  var eraModifica = idModifica !== null;
+  var idVino = eraModifica ? idModifica : Date.now();
 
   mostraFeedback('feedback-vini', '🔄 Traduzione in corso...', 'ok');
 
