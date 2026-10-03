@@ -147,10 +147,15 @@ function traduciPiatto(categoria, nome, descrizione) {
     if (!res.ok) throw new Error('Errore API ' + res.status);
     return res.json();
   })
-  .then(function (data) {
+    .then(function (data) {
+    console.log('Risposta traduzione:', JSON.stringify(data));
+    if (!data.content || !data.content[0]) {
+      throw new Error('Risposta API non valida: ' + JSON.stringify(data));
+    }
     var testo = data.content[0].text.trim();
     testo = testo.replace(/```json|```/g, '').trim();
     return JSON.parse(testo);
+  })
   })
   .catch(function (err) {
     console.warn('Traduzione fallita:', err);
