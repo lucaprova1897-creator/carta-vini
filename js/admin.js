@@ -142,8 +142,9 @@ function traduciPiatto(categoria, nome, descrizione) {
     return res.json();
   })
   .then(function (data) {
+        console.log('Risposta proxy:', JSON.stringify(data));
     if (!data || !data.content || !data.content[0] || !data.content[0].text) {
-      throw new Error('Risposta non valida');
+      throw new Error('Risposta non valida: ' + JSON.stringify(data));
     }
     var testo = data.content[0].text.trim().replace(/```json|```/g, '').trim();
     return JSON.parse(testo);
