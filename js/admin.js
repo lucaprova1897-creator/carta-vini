@@ -119,40 +119,43 @@ function salvaRemoto() {
    TRADUZIONE AUTOMATICA CON CLAUDE
    --------------------------------------------------------- */
 function traduciPiatto(categoria, nome, descrizione) {
-  var prompt =
-    'Traduci i seguenti campi di un piatto di ristorante italiano in francese e in inglese. ' +
-    'Rispondi SOLO con un oggetto JSON valido, senza markdown, senza testo aggiuntivo.\n\n' +
-    'Originale (italiano):\n' +
-    'Categoria: ' + categoria + '\n' +
-    'Nome: ' + nome + '\n' +
-    'Descrizione: ' + (descrizione || '') + '\n\n' +
-    'Formato risposta:\n' +
-    '{"categoria_fr":"...","nome_fr":"...","descrizione_fr":"...",' +
-    '"categoria_en":"...","nome_en":"...","descrizione_en":"..."}\n\n' +
-    'Mantieni un registro appropriato per un ristorante raffinato di montagna. ' +
-    'Se la descrizione è vuota, metti stringa vuota.';
+  var testi = [categoria, nome, descrizione || ''].join('\n---\n');
 
-    return fetch('https://script.google.com/macros/s/AKfycbztx7is7_vJNvw3k6UX2DybjYSl17JclhEivcV3XtDQcOssjn62wIsd5-Lt4ob7dcATww/exec', {
+  return fetch('https://api-free.deepl.com/v2/translate', {
     method: 'POST',
     headers: {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 400,
-      messages: [{ role: 'user', content: prompt }]
+    body: 'auth_key=d7f695e8-b9dd-4a02-b213-04cbcf643fea%3Afx' +
+          '&text=' + encodeURIComponent(categoria) +
+          '&text=' + encodeURIComponent(nome) +
+          '&text=' + encodeURIComponent(descrizione || '') +
+          '&source_lang=IT&target_lang=FR'
+  })
+  .then(function (res) { return res.json(); })
+  .then(function (dataFR) {
+    return fetch('https://api-free.deepl.com/v2/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'auth_key=d7f695e8-b9dd-4a02-b213-04cbcf643fea%3Afx' +
+            '&text=' + encodeURIComponent(categoria) +
+            '&text=' + encodeURIComponent(nome) +
+            '&text=' + encodeURIComponent(descrizione || '') +
+            '&source_lang=IT&target_lang=EN'
     })
-  })
-       
-  .then(function (res) {
-    if (!res.ok) throw new Error('Errore API ' + res.status);
-    return res.json();
-  })
-  .then(function (data) {
-    var testo = data.content[0].text.trim();
-    /* Rimuovi eventuali backtick markdown */
-    testo = testo.replace(/```json|```/g, '').trim();
-    return JSON.parse(testo);
+    .then(function (res) { return res.json(); })
+    .then(function (dataEN) {
+      return {
+        categoria_fr: dataFR.translations[0].text,
+        nome_fr:      dataFR.translations[1].text,
+        descrizione_fr: dataFR.translations[2].text,
+        categoria_en: dataEN.translations[0].text,
+        nome_en:      dataEN.translations[1].text,
+        descrizione_en: dataEN.translations[2].text
+      };
+    });
   })
   .catch(function (err) {
     console.warn('Traduzione fallita:', err);
@@ -162,7 +165,6 @@ function traduciPiatto(categoria, nome, descrizione) {
     };
   });
 }
-
 /* =========================================================
    PIATTI DEL GIORNO
    ========================================================= */
