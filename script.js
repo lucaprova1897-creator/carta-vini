@@ -11,117 +11,8 @@ var CONFIG = {
 var ORDINE_CATEGORIE_PIATTI = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
 var ORDINE_CATEGORIE_VINI = ['Bollicine', 'Bianchi', 'Rosati', 'Rossi'];
 
-/* ---------------------------------------------------------
-   NOTIFICA FERRAGOSTO
-   --------------------------------------------------------- */
-function inizializzaFerragosto() {
-  var overlay = document.getElementById('ferragosto-overlay');
-  var btnClose = document.getElementById('ferragosto-close');
-  var img = document.getElementById('ferragosto-img');
-  var imgBox = document.getElementById('ferragosto-img-box');
-  var fullscreen = document.getElementById('ferragosto-fullscreen');
-  var fullscreenImg = document.getElementById('ferragosto-fullscreen-img');
-  var fullscreenClose = document.getElementById('ferragosto-fullscreen-close');
-  var langBtns = document.querySelectorAll('.ferragosto-lang__btn');
-  var riapriBtn = document.getElementById('ferragosto-btn');
-
-  if (!overlay) return;
-
-  /* Mostra il bottone di riapertura */
-  function mostraBtnRiapri() {
-    if (riapriBtn) {
-      riapriBtn.style.display = 'block';
-      window.setTimeout(function () {
-        riapriBtn.classList.remove('nascosto');
-      }, 50);
-    }
-  }
-
-  /* Apri overlay */
-  function apriOverlay() {
-    overlay.style.opacity = '0';
-    overlay.style.display = 'flex';
-    window.setTimeout(function () {
-      overlay.style.opacity = '1';
-      overlay.style.transition = 'opacity 0.4s ease';
-    }, 10);
-    if (riapriBtn) riapriBtn.classList.add('nascosto');
-  }
-
-  /* Chiudi overlay */
-  function chiudiOverlay() {
-    overlay.style.opacity = '0';
-    overlay.style.transition = 'opacity 0.3s ease';
-    window.setTimeout(function () {
-      overlay.style.display = 'none';
-      overlay.style.opacity = '';
-      overlay.style.transition = '';
-    }, 300);
-    sessionStorage.setItem('ferragosto-visto', '1');
-    mostraBtnRiapri();
-  }
-
-  /* Prima apertura automatica */
-  if (!sessionStorage.getItem('ferragosto-visto')) {
-    window.setTimeout(apriOverlay, 800);
-  } else {
-    mostraBtnRiapri();
-  }
-
-  /* Bottone riapertura */
-  if (riapriBtn) {
-    riapriBtn.addEventListener('click', apriOverlay);
-  }
-
-  /* Chiudi con X */
-  btnClose.addEventListener('click', chiudiOverlay);
-
-  /* Chiudi cliccando fuori dalla card */
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) chiudiOverlay();
-  });
-
-  /* Nascondi bottone quando si va sulle proposte, rimostra tornando ai vini */
-  var tabProposte = document.querySelector('[data-tab="proposte"]');
-  var tabVini = document.querySelector('[data-tab="vini"]');
-  if (tabProposte && riapriBtn) {
-    tabProposte.addEventListener('click', function () {
-      riapriBtn.classList.add('nascosto');
-    });
-  }
-  if (tabVini && riapriBtn) {
-    tabVini.addEventListener('click', function () {
-      if (!overlay.style.display || overlay.style.display === 'none') {
-        riapriBtn.classList.remove('nascosto');
-      }
-    });
-  }
-
-  /* Switch lingua ITA/ENG */
-  langBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      langBtns.forEach(function (b) { b.classList.remove('ferragosto-lang__btn--active'); });
-      this.classList.add('ferragosto-lang__btn--active');
-      var src = this.dataset.lang === 'ita' ? 'ferragosto_ita.jpg' : 'ferragosto_ing.jpg';
-      img.src = src;
-      fullscreenImg.src = src;
-    });
-  });
-
-  /* Apri immagine a schermo intero */
-  imgBox.addEventListener('click', function () {
-    fullscreen.style.display = 'flex';
-  });
-
-  /* Chiudi schermo intero */
-  fullscreenClose.addEventListener('click', function () {
-    fullscreen.style.display = 'none';
-  });
-
-  fullscreen.addEventListener('click', function (e) {
-    if (e.target === fullscreen) fullscreen.style.display = 'none';
-  });
-}
+/* Lingua attiva nella sezione vini — default italiano */
+var linguaVini = 'it';
 
 /* ---------------------------------------------------------
    BOTTONE FISSO PROPOSTE
@@ -198,6 +89,8 @@ function mostraData() {
 /* ---------------------------------------------------------
    CARICAMENTO DATI DA JSONBIN
    --------------------------------------------------------- */
+var viniGlobali = [];
+
 function caricaDati() {
   fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID + '/latest', {
     headers: { 'X-Master-Key': CONFIG.API_KEY }
@@ -209,7 +102,8 @@ function caricaDati() {
   .then(function (data) {
     var record = data.record || {};
     renderProposte(record.proposte || []);
-    renderViniCalice(record.vini || []);
+    viniGlobali = record.vini || [];
+    renderViniCalice(viniGlobali, linguaVini);
   })
   .catch(function () {
     var lista = document.getElementById('proposte-lista');
@@ -259,9 +153,30 @@ function renderProposte(proposte) {
 }
 
 /* ---------------------------------------------------------
+   BOTTONI LINGUA VINI
+   --------------------------------------------------------- */
+function inizializzaLinguaVini() {
+  var container = document.getElementById('calice-lang');
+  if (!container) return;
+
+  container.addEventListener('click', function (e) {
+    var btn = e.target.closest('.calice-lang__btn');
+    if (!btn) return;
+
+    container.querySelectorAll('.calice-lang__btn').forEach(function (b) {
+      b.classList.remove('calice-lang__btn--active');
+    });
+    btn.classList.add('calice-lang__btn--active');
+
+    linguaVini = btn.dataset.lang;
+    renderViniCalice(viniGlobali, linguaVini);
+  });
+}
+
+/* ---------------------------------------------------------
    RENDER VINI AL CALICE
    --------------------------------------------------------- */
-function renderViniCalice(vini) {
+function renderViniCalice(vini, lingua) {
   var lista = document.getElementById('calice-lista');
   var vuoto = document.getElementById('calice-vuoto');
   if (!lista) return;
@@ -291,6 +206,14 @@ function renderViniCalice(vini) {
     gruppoEl.appendChild(catEl);
 
     gruppo.forEach(function (vino) {
+      /* Seleziona i campi nella lingua giusta */
+      var vitigno = lingua === 'fr' ? (vino.vitigno_fr || vino.vitigno || '')
+                  : lingua === 'en' ? (vino.vitigno_en || vino.vitigno || '')
+                  : (vino.vitigno || '');
+      var descrizione = lingua === 'fr' ? (vino.descrizione_fr || vino.descrizione || '')
+                      : lingua === 'en' ? (vino.descrizione_en || vino.descrizione || '')
+                      : (vino.descrizione || '');
+
       var vinoEl = document.createElement('div');
       vinoEl.className = 'calice__vino';
       vinoEl.innerHTML =
@@ -301,8 +224,8 @@ function renderViniCalice(vini) {
           '</div>' +
           '<div class="calice__vino-tipo">' + vino.tipologia + '</div>' +
           '<div class="calice__vino-nome">' + vino.nome + '</div>' +
-          (vino.vitigno ? '<div class="calice__vino-vitigno">' + vino.vitigno + '</div>' : '') +
-          (vino.descrizione ? '<div class="calice__vino-descrizione">' + vino.descrizione + '</div>' : '') +
+          (vitigno ? '<div class="calice__vino-vitigno">' + vitigno + '</div>' : '') +
+          (descrizione ? '<div class="calice__vino-descrizione">' + descrizione + '</div>' : '') +
         '</div>' +
         '<div class="calice__vino-prezzo">€ ' + Number(vino.prezzo).toFixed(2) + '</div>';
       gruppoEl.appendChild(vinoEl);
@@ -357,9 +280,9 @@ function aggiungiFeedbackPulsante() {
    INIT
    --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
-  inizializzaFerragosto();
   var hintBtn = inizializzaHintBtn();
   inizializzaTabs(hintBtn);
+  inizializzaLinguaVini();
   mostraData();
   caricaDati();
   animaIngressoSequenziale();
