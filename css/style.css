@@ -414,7 +414,41 @@ a { text-decoration: none; color: inherit; }
   transform: translateY(-3px); box-shadow: 0 16px 38px rgba(0,0,0,0.5);
 }
 .cta:active { transform: translateY(-1px); }
+/* Gruppo bottoni carta vini con lingue */
+.cta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+}
 
+.cta-lang {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cta-lang__btn {
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold-soft);
+  background: rgba(13,10,8,0.5);
+  backdrop-filter: blur(8px);
+  color: var(--ivory-dim);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.cta-lang__btn:hover {
+  background: var(--gold);
+  color: var(--night-deep);
+  border-color: var(--gold);
+}
 /* =========================================================
    VINI AL CALICE
    ========================================================= */
