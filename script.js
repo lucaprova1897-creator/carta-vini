@@ -9,10 +9,10 @@ var CONFIG = {
 };
 
 var ORDINE_CATEGORIE_PIATTI = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
-var ORDINE_CATEGORIE_VINI = ['Bollicine', 'Bianchi', 'Rosati', 'Rossi'];
 
-/* Lingua attiva nella sezione vini — default italiano */
-var linguaVini = 'it';
+/* Lingua attiva nelle proposte — default italiano */
+var linguaProposte = 'it';
+var proposteGlobali = [];
 
 /* ---------------------------------------------------------
    BOTTONE FISSO PROPOSTE
@@ -89,8 +89,6 @@ function mostraData() {
 /* ---------------------------------------------------------
    CARICAMENTO DATI DA JSONBIN
    --------------------------------------------------------- */
-var viniGlobali = [];
-
 function caricaDati() {
   fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID + '/latest', {
     headers: { 'X-Master-Key': CONFIG.API_KEY }
@@ -101,24 +99,39 @@ function caricaDati() {
   })
   .then(function (data) {
     var record = data.record || {};
-    renderProposte(record.proposte || []);
-    viniGlobali = record.vini || [];
-    renderViniCalice(viniGlobali, linguaVini);
+    proposteGlobali = record.proposte || [];
+    renderProposte(proposteGlobali, linguaProposte);
   })
   .catch(function () {
     var lista = document.getElementById('proposte-lista');
     if (lista) lista.innerHTML = '<div class="proposte__vuoto"><p>⚠️</p><p>Impossibile caricare i dati.</p></div>';
-    var caliceVuoto = document.getElementById('calice-vuoto');
-    if (caliceVuoto) caliceVuoto.style.display = 'block';
-    var caliceLista = document.getElementById('calice-lista');
-    if (caliceLista) caliceLista.innerHTML = '';
+  });
+}
+
+/* ---------------------------------------------------------
+   BOTTONI LINGUA PROPOSTE
+   --------------------------------------------------------- */
+function inizializzaLinguaProposte() {
+  var container = document.getElementById('proposte-lang');
+  if (!container) return;
+
+  container.addEventListener('click', function (e) {
+    var btn = e.target.closest('.proposte-lang__btn');
+    if (!btn) return;
+
+    container.querySelectorAll('.proposte-lang__btn').forEach(function (b) {
+      b.classList.remove('proposte-lang__btn--active');
+    });
+    btn.classList.add('proposte-lang__btn--active');
+    linguaProposte = btn.dataset.lang;
+    renderProposte(proposteGlobali, linguaProposte);
   });
 }
 
 /* ---------------------------------------------------------
    RENDER PROPOSTE
    --------------------------------------------------------- */
-function renderProposte(proposte) {
+function renderProposte(proposte, lingua) {
   var lista = document.getElementById('proposte-lista');
   var vuoto = document.getElementById('proposte-vuoto');
   if (!lista) return;
@@ -139,99 +152,27 @@ function renderProposte(proposte) {
   });
 
   proposte.forEach(function (piatto) {
+    /* Seleziona i campi nella lingua giusta */
+    var nome = lingua === 'fr' ? (piatto.nome_fr || piatto.nome || '')
+             : lingua === 'en' ? (piatto.nome_en || piatto.nome || '')
+             : (piatto.nome || '');
+    var descrizione = lingua === 'fr' ? (piatto.descrizione_fr || piatto.descrizione || '')
+                    : lingua === 'en' ? (piatto.descrizione_en || piatto.descrizione || '')
+                    : (piatto.descrizione || '');
+    var categoria = lingua === 'fr' ? (piatto.categoria_fr || piatto.categoria || '')
+                  : lingua === 'en' ? (piatto.categoria_en || piatto.categoria || '')
+                  : (piatto.categoria || '');
+
     var card = document.createElement('div');
     card.className = 'piatto';
     card.innerHTML =
       '<div class="piatto__top">' +
-        '<span class="piatto__categoria">' + piatto.categoria + '</span>' +
+        '<span class="piatto__categoria">' + categoria + '</span>' +
         '<span class="piatto__prezzo">€ ' + Number(piatto.prezzo).toFixed(2) + '</span>' +
       '</div>' +
-      '<div class="piatto__nome">' + piatto.nome + '</div>' +
-      '<div class="piatto__descrizione">' + piatto.descrizione + '</div>';
+      '<div class="piatto__nome">' + nome + '</div>' +
+      '<div class="piatto__descrizione">' + descrizione + '</div>';
     lista.appendChild(card);
-  });
-}
-
-/* ---------------------------------------------------------
-   BOTTONI LINGUA VINI
-   --------------------------------------------------------- */
-function inizializzaLinguaVini() {
-  var container = document.getElementById('calice-lang');
-  if (!container) return;
-
-  container.addEventListener('click', function (e) {
-    var btn = e.target.closest('.calice-lang__btn');
-    if (!btn) return;
-
-    container.querySelectorAll('.calice-lang__btn').forEach(function (b) {
-      b.classList.remove('calice-lang__btn--active');
-    });
-    btn.classList.add('calice-lang__btn--active');
-
-    linguaVini = btn.dataset.lang;
-    renderViniCalice(viniGlobali, linguaVini);
-  });
-}
-
-/* ---------------------------------------------------------
-   RENDER VINI AL CALICE
-   --------------------------------------------------------- */
-function renderViniCalice(vini, lingua) {
-  var lista = document.getElementById('calice-lista');
-  var vuoto = document.getElementById('calice-vuoto');
-  if (!lista) return;
-
-  lista.innerHTML = '';
-
-  if (!vini || vini.length === 0) {
-    lista.style.display = 'none';
-    if (vuoto) vuoto.style.display = 'block';
-    return;
-  }
-
-  if (vuoto) vuoto.style.display = 'none';
-  lista.style.flexDirection = 'column';
-  lista.style.gap = '1rem';
-
-  ORDINE_CATEGORIE_VINI.forEach(function (categoria) {
-    var gruppo = vini.filter(function (v) { return v.categoria === categoria; });
-    if (gruppo.length === 0) return;
-
-    var gruppoEl = document.createElement('div');
-    gruppoEl.className = 'calice__gruppo';
-
-    var catEl = document.createElement('div');
-    catEl.className = 'calice__categoria';
-    catEl.textContent = categoria;
-    gruppoEl.appendChild(catEl);
-
-    gruppo.forEach(function (vino) {
-      /* Seleziona i campi nella lingua giusta */
-      var vitigno = lingua === 'fr' ? (vino.vitigno_fr || vino.vitigno || '')
-                  : lingua === 'en' ? (vino.vitigno_en || vino.vitigno || '')
-                  : (vino.vitigno || '');
-      var descrizione = lingua === 'fr' ? (vino.descrizione_fr || vino.descrizione || '')
-                      : lingua === 'en' ? (vino.descrizione_en || vino.descrizione || '')
-                      : (vino.descrizione || '');
-
-      var vinoEl = document.createElement('div');
-      vinoEl.className = 'calice__vino';
-      vinoEl.innerHTML =
-        '<div class="calice__vino-info">' +
-          '<div class="calice__vino-produttore">' +
-            vino.produttore +
-            (vino.regione ? ' <span class="calice__vino-regione">· ' + vino.regione + '</span>' : '') +
-          '</div>' +
-          '<div class="calice__vino-tipo">' + vino.tipologia + '</div>' +
-          '<div class="calice__vino-nome">' + vino.nome + '</div>' +
-          (vitigno ? '<div class="calice__vino-vitigno">' + vitigno + '</div>' : '') +
-          (descrizione ? '<div class="calice__vino-descrizione">' + descrizione + '</div>' : '') +
-        '</div>' +
-        '<div class="calice__vino-prezzo">€ ' + Number(vino.prezzo).toFixed(2) + '</div>';
-      gruppoEl.appendChild(vinoEl);
-    });
-
-    lista.appendChild(gruppoEl);
   });
 }
 
@@ -282,7 +223,7 @@ function aggiungiFeedbackPulsante() {
 document.addEventListener('DOMContentLoaded', function () {
   var hintBtn = inizializzaHintBtn();
   inizializzaTabs(hintBtn);
-  inizializzaLinguaVini();
+  inizializzaLinguaProposte();
   mostraData();
   caricaDati();
   animaIngressoSequenziale();
