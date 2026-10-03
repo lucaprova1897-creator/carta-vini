@@ -12,86 +12,71 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=9">
 </head>
 <body>
 
-  <nav class="tabs" role="tablist">
-    <button class="tabs__btn tabs__btn--active" role="tab" data-tab="vini" aria-selected="true">
-      🍷 Carta dei Vini
-    </button>
-    <button class="tabs__btn" role="tab" data-tab="proposte" aria-selected="false">
-      🍽️ Proposte del Giorno
-    </button>
-  </nav>
+  <main class="pagina">
 
-  <div class="slider" id="slider">
+    <!-- SFONDO FOTO -->
+    <div class="sfondo" aria-hidden="true"></div>
+    <div class="sfondo-overlay" aria-hidden="true"></div>
 
-    <!-- PAGINA 1: CARTA DEI VINI -->
-    <section class="slide" id="tab-vini" role="tabpanel">
-      <main class="hero">
+    <!-- CONTENUTO -->
+    <div class="contenuto">
 
-        <div class="hero__grain" aria-hidden="true"></div>
-
-        <div class="hero__content">
-
-          <div class="brand" data-animate="fade-in">
-            <div class="brand__badge">
-              <img src="logo.png" alt="Lou Tchappé" class="brand__logo" width="120" height="120">
-            </div>
-            <p class="brand__name">Lou Tchappé</p>
-          </div>
-
-          <h1 class="hero__title" data-animate="fade-in">Carta dei Vini</h1>
-
-          <p class="intro" data-animate="fade-in">
-            Ogni bottiglia racconta una storia di terra, di clima e di uomini.
-            Questa carta dei vini è un invito a scoprire i sapori che accompagnano
-            la nostra cucina e la nostra montagna.
-          </p>
-
-          <div class="divider" data-animate="fade-in" aria-hidden="true"></div>
-
-          <!-- BOTTONI CARTA DEI VINI — tre lingue -->
-          <div class="cta-group" data-animate="fade-in">
-            <a
-              href="https://cantina360.it/c/b403944e-895e-4dd6-8d46-fd5c207cfcda"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="cta"
-              id="open-wine-list"
-            >
-              <span class="cta__icon" aria-hidden="true">🍷</span>
-              <span class="cta__label">Carta dei Vini</span>
-            </a>
-            <div class="cta-lang">
-              <a href="https://cantina360.it/c/b403944e-895e-4dd6-8d46-fd5c207cfcda" target="_blank" rel="noopener noreferrer" class="cta-lang__btn">ITA</a>
-              <a href="https://cantina360.it/c/b403944e-895e-4dd6-8d46-fd5c207cfcda?lang=fr" target="_blank" rel="noopener noreferrer" class="cta-lang__btn">FRA</a>
-              <a href="https://cantina360.it/c/b403944e-895e-4dd6-8d46-fd5c207cfcda?lang=en" target="_blank" rel="noopener noreferrer" class="cta-lang__btn">ENG</a>
-            </div>
-          </div>
-
-          <footer class="footer" data-animate="fade-in">
-            <span class="footer__snowflake" aria-hidden="true">❆</span>
-            <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
-          </footer>
-
+      <!-- BRAND -->
+      <header class="brand" data-animate="fade-in">
+        <div class="brand__badge">
+          <img src="logo.png" alt="Lou Tchappé" class="brand__logo" width="100" height="100">
         </div>
-      </main>
-    </section>
+        <p class="brand__name">Lou Tchappé</p>
+        <p class="brand__luogo">Cogne · Valle d'Aosta</p>
+      </header>
 
-    <!-- PAGINA 2: PROPOSTE DEL GIORNO -->
-    <section class="slide slide--proposte" id="tab-proposte" role="tabpanel">
+      <!-- CARTA DEI VINI -->
+      <section class="sezione" data-animate="fade-in">
+        <div class="sezione__header">
+          <span class="sezione__linea"></span>
+          <h2 class="sezione__titolo">🍷</h2>
+          <span class="sezione__linea"></span>
+        </div>
+        <div class="carta-vini-btns">
+          <a href="https://cantina360.it/c/b403944e-895e-4dd6-8d46-fd5c207cfcda?lang=it"
+             target="_blank" rel="noopener noreferrer"
+             class="carta-btn">
+            Carta dei Vini
+          </a>
+          <a href="https://cantina360.it/c/b403944e-895e-4dd6-8d46-fd5c207cfcda?lang=fr"
+             target="_blank" rel="noopener noreferrer"
+             class="carta-btn">
+            Carte des Vins
+          </a>
+          <a href="https://cantina360.it/c/b403944e-895e-4dd6-8d46-fd5c207cfcda?lang=en"
+             target="_blank" rel="noopener noreferrer"
+             class="carta-btn">
+            Wine List
+          </a>
+        </div>
+      </section>
 
-      <div class="proposte__content">
+      <!-- DIVISORE -->
+      <div class="divisore" data-animate="fade-in" aria-hidden="true"></div>
 
-        <header class="proposte__header">
-          <p class="proposte__ristorante">Lou Tchappé</p>
-          <h2 class="proposte__titolo">Proposte del Giorno</h2>
-          <p class="proposte__data" id="data-oggi"></p>
-        </header>
+      <!-- PROPOSTE DEL GIORNO -->
+      <section class="sezione" data-animate="fade-in">
+        <div class="sezione__header">
+          <span class="sezione__linea"></span>
+          <h2 class="sezione__titolo">🍽️</h2>
+          <span class="sezione__linea"></span>
+        </div>
 
-        <!-- Bottoni lingua proposte -->
+        <div class="proposte-header">
+          <p class="proposte-titolo" id="proposte-titolo">Proposte del Giorno</p>
+          <p class="proposte-data" id="data-oggi"></p>
+        </div>
+
+        <!-- Bottoni lingua -->
         <div class="proposte-lang" id="proposte-lang">
           <button class="proposte-lang__btn proposte-lang__btn--active" data-lang="it">ITA</button>
           <button class="proposte-lang__btn" data-lang="fr">FRA</button>
@@ -101,7 +86,7 @@
         <div class="proposte__lista" id="proposte-lista">
           <div class="proposte__loading">
             <span class="proposte__spinner" aria-hidden="true"></span>
-            <p>Caricamento proposte...</p>
+            <p>Caricamento...</p>
           </div>
         </div>
 
@@ -111,16 +96,16 @@
           <p>Chiedi al personale!</p>
         </div>
 
-        <footer class="proposte__footer">
-          <span class="footer__snowflake" aria-hidden="true">❆</span>
-          <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
-        </footer>
+      </section>
 
-      </div>
-    </section>
+      <footer class="footer" data-animate="fade-in">
+        <span class="footer__snowflake" aria-hidden="true">❆</span>
+        <span class="footer__text">Lou Tchappé&nbsp;•&nbsp;Cogne&nbsp;•&nbsp;Valle d'Aosta</span>
+      </footer>
 
-  </div>
+    </div>
+  </main>
 
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=9"></script>
 </body>
 </html>
