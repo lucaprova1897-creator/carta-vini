@@ -131,13 +131,10 @@ function traduciPiatto(categoria, nome, descrizione) {
     'Mantieni un registro appropriato per un ristorante raffinato di montagna. ' +
     'Se la descrizione è vuota, metti stringa vuota.';
 
-  return fetch('https://api.anthropic.com/v1/messages', {
+    return fetch('https://script.google.com/macros/s/AKfycbzBrdXWGpx-2w_G33Njojh4Z-iVQlH0Goi9ooqAN-fAuCyBTklYtaIU59YOMfKM1KfPVg/exec', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': CONFIG.ANTHROPIC_KEY,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
+      'Content-Type': 'text/plain'
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
@@ -145,6 +142,7 @@ function traduciPiatto(categoria, nome, descrizione) {
       messages: [{ role: 'user', content: prompt }]
     })
   })
+       
   .then(function (res) {
     if (!res.ok) throw new Error('Errore API ' + res.status);
     return res.json();
