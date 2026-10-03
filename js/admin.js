@@ -3,6 +3,7 @@
    Gestione piatti del giorno con traduzione automatica FR/EN
    ========================================================= */
 
+/* v2 */
 var CONFIG = {
   PASSWORD: 'LouTchappe26',
   API_KEY: '$2a$10$aULdtLYQzrRZ6f7c/SMLjOUDoWnF142XoYjYl9jgdoqCKAf4hPoaa',
