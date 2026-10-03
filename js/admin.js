@@ -348,9 +348,9 @@ function salvaVino() {
       prezzo: prezzo
     };
 
-    if (eraModifica) {
+       if (eraModifica) {
       stato.vini = stato.vini.map(function (v) {
-        return v.id === stato.modificandoVinoId ? vino : v;
+        return v.id === idModifica ? vino : v;
       });
     } else {
       stato.vini.push(vino);
