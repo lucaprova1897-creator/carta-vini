@@ -1,13 +1,14 @@
 /* =========================================================
    LOU TCHAPPÉ — admin.js
-   Gestione piatti del giorno + vini al calice
+   Gestione piatti del giorno + vini al calice con traduzione automatica
    ========================================================= */
 
 var CONFIG = {
   PASSWORD: 'LouTchappe26',
   API_KEY: '$2a$10$aULdtLYQzrRZ6f7c/SMLjOUDoWnF142XoYjYl9jgdoqCKAf4hPoaa',
   BIN_ID: '6a441993da38895dfe17d492',
-  BASE_URL: 'https://api.jsonbin.io/v3/b'
+  BASE_URL: 'https://api.jsonbin.io/v3/b',
+  ANTHROPIC_KEY: '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'
 };
 
 var ORDINE_PIATTI = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
@@ -129,6 +130,52 @@ function salvaRemoto() {
   }).then(function (res) {
     if (!res.ok) throw new Error('Errore ' + res.status);
     return res.json();
+  });
+}
+
+/* ---------------------------------------------------------
+   TRADUZIONE AUTOMATICA CON CLAUDE
+   --------------------------------------------------------- */
+function traduciVino(nome, vitigno, descrizione) {
+  var testo = '';
+  if (vitigno) testo += 'Vitigno: ' + vitigno + '\n';
+  if (descrizione) testo += 'Descrizione: ' + descrizione;
+
+  if (!testo.trim()) {
+    return Promise.resolve({ vitigno_fr: '', vitigno_en: '', descrizione_fr: '', descrizione_en: '' });
+  }
+
+  var prompt = 'Traduci i seguenti campi di un vino italiano in francese e in inglese. ' +
+    'Rispondi SOLO con un oggetto JSON valido, senza markdown, senza testo aggiuntivo.\n\n' +
+    'Testo originale (italiano):\n' + testo + '\n\n' +
+    'Formato risposta:\n' +
+    '{"vitigno_fr":"...","vitigno_en":"...","descrizione_fr":"...","descrizione_en":"..."}\n\n' +
+    'Se un campo è vuoto, metti stringa vuota. Mantieni termini tecnici del vino appropriati per lingua.';
+
+  return fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': CONFIG.ANTHROPIC_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  })
+  .then(function (res) {
+    if (!res.ok) throw new Error('Errore API');
+    return res.json();
+  })
+  .then(function (data) {
+    var testo = data.content[0].text.trim();
+    return JSON.parse(testo);
+  })
+  .catch(function () {
+    return { vitigno_fr: vitigno || '', vitigno_en: vitigno || '', descrizione_fr: descrizione || '', descrizione_en: descrizione || '' };
   });
 }
 
@@ -279,23 +326,43 @@ function salvaVino() {
   if (isNaN(prezzo) || prezzo < 0) { mostraFeedback('feedback-vini', 'Inserisci un prezzo valido', 'err'); return; }
 
   var eraModifica = stato.modificandoVinoId !== null;
+  var idVino = eraModifica ? stato.modificandoVinoId : Date.now();
 
-  if (eraModifica) {
-    stato.vini = stato.vini.map(function (v) {
-      if (v.id === stato.modificandoVinoId) {
-        return { id: v.id, categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, regione: regione, prezzo: prezzo };
-      }
-      return v;
-    });
-  } else {
-    stato.vini.push({ id: Date.now(), categoria: categoria, tipologia: tipologia, nome: nome, vitigno: vitigno, descrizione: descrizione, produttore: produttore, regione: regione, prezzo: prezzo });
-  }
+  mostraFeedback('feedback-vini', '🔄 Traduzione in corso...', 'ok');
 
-  salvaRemoto().then(function () {
+  traduciVino(nome, vitigno, descrizione).then(function (traduzioni) {
+    var vino = {
+      id: idVino,
+      categoria: categoria,
+      tipologia: tipologia,
+      nome: nome,
+      vitigno: vitigno,
+      vitigno_fr: traduzioni.vitigno_fr || vitigno,
+      vitigno_en: traduzioni.vitigno_en || vitigno,
+      descrizione: descrizione,
+      descrizione_fr: traduzioni.descrizione_fr || descrizione,
+      descrizione_en: traduzioni.descrizione_en || descrizione,
+      produttore: produttore,
+      regione: regione,
+      prezzo: prezzo
+    };
+
+    if (eraModifica) {
+      stato.vini = stato.vini.map(function (v) {
+        return v.id === stato.modificandoVinoId ? vino : v;
+      });
+    } else {
+      stato.vini.push(vino);
+    }
+
+    return salvaRemoto();
+  })
+  .then(function () {
     renderListaVini();
     resetFormVini();
-    mostraFeedback('feedback-vini', eraModifica ? 'Vino aggiornato ✓' : 'Vino aggiunto ✓', 'ok');
-  }).catch(function () {
+    mostraFeedback('feedback-vini', eraModifica ? 'Vino aggiornato ✓' : 'Vino aggiunto ✓ (tradotto in FR e EN)', 'ok');
+  })
+  .catch(function () {
     mostraFeedback('feedback-vini', 'Errore di salvataggio. Riprova.', 'err');
   });
 }
@@ -322,6 +389,10 @@ function renderListaVini() {
         '<div class="admin__piatto-desc">' + vino.produttore + '</div>' +
         '<div class="admin__piatto-nome">' + vino.nome + '</div>' +
         (vino.vitigno ? '<div class="admin__piatto-desc">' + vino.vitigno + '</div>' : '') +
+        '<div class="admin__piatto-desc" style="color:rgba(201,166,107,0.6);font-size:0.7rem">' +
+          (vino.descrizione_fr ? '🇫🇷 ✓' : '🇫🇷 —') + ' ' +
+          (vino.descrizione_en ? '🇬🇧 ✓' : '🇬🇧 —') +
+        '</div>' +
         '<div class="admin__piatto-prezzo">€ ' + Number(vino.prezzo).toFixed(2) + '</div>' +
       '</div>' +
       '<div class="admin__piatto-azioni">' +
@@ -383,7 +454,7 @@ function mostraFeedback(elId, messaggio, tipo) {
   el.textContent = messaggio;
   el.className = 'admin__feedback admin__feedback--' + tipo;
   el.style.display = 'block';
-  window.setTimeout(function () { el.style.display = 'none'; }, 3000);
+  window.setTimeout(function () { el.style.display = 'none'; }, 4000);
 }
 
 /* ---------------------------------------------------------
