@@ -38,21 +38,24 @@ a { text-decoration: none; color: inherit; }
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
 }
 
 .sfondo {
   position: fixed;
-  inset: 0;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 0;
   background: url('../bg-vini.jpg') center center / cover no-repeat;
-  will-change: transform;
   transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .sfondo-overlay {
   position: fixed;
-  inset: 0;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 1;
   background: linear-gradient(
     to bottom,
@@ -60,6 +63,8 @@ a { text-decoration: none; color: inherit; }
     rgba(13,10,8,0.55) 50%,
     rgba(13,10,8,0.75) 100%
   );
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* =========================================================
