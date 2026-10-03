@@ -1,15 +1,15 @@
+/* v3 */
 /* =========================================================
    LOU TCHAPPÉ — admin.js
    Gestione piatti del giorno con traduzione automatica FR/EN
    ========================================================= */
 
-/* v2 */
 var CONFIG = {
   PASSWORD: 'LouTchappe26',
   API_KEY: '$2a$10$aULdtLYQzrRZ6f7c/SMLjOUDoWnF142XoYjYl9jgdoqCKAf4hPoaa',
   BIN_ID: '6a441993da38895dfe17d492',
   BASE_URL: 'https://api.jsonbin.io/v3/b',
-  ANTHROPIC_KEY: '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'
+  PROXY_URL: 'https://lou-tchappe-proxy.netlify.app/.netlify/functions/translate'
 };
 
 var ORDINE_PIATTI = ['Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dessert', 'Speciale'];
@@ -62,7 +62,6 @@ function inizializzaAdmin() {
       weekday: 'long', day: 'numeric', month: 'long'
     });
   }
-
   caricaDati();
   inizializzaFormPiatti();
 }
@@ -79,8 +78,7 @@ function caricaDati() {
     return res.json();
   })
   .then(function (data) {
-    var record = data.record || {};
-    stato.proposte = record.proposte || [];
+    stato.proposte = (data.record && data.record.proposte) ? data.record.proposte : [];
     renderListaPiatti();
   })
   .catch(function () {
@@ -90,7 +88,7 @@ function caricaDati() {
 }
 
 /* ---------------------------------------------------------
-   SALVA REMOTO
+   SALVA REMOTO — legge prima per non perdere altri dati
    --------------------------------------------------------- */
 function salvaRemoto() {
   return fetch(CONFIG.BASE_URL + '/' + CONFIG.BIN_ID + '/latest', {
@@ -116,7 +114,7 @@ function salvaRemoto() {
 }
 
 /* ---------------------------------------------------------
-   TRADUZIONE AUTOMATICA CON CLAUDE
+   TRADUZIONE CON CLAUDE via Netlify proxy
    --------------------------------------------------------- */
 function traduciPiatto(categoria, nome, descrizione) {
   var prompt =
@@ -126,17 +124,13 @@ function traduciPiatto(categoria, nome, descrizione) {
     'Categoria: ' + categoria + '\n' +
     'Nome: ' + nome + '\n' +
     'Descrizione: ' + (descrizione || '') + '\n\n' +
-    'Formato risposta:\n' +
-    '{"categoria_fr":"...","nome_fr":"...","descrizione_fr":"...",' +
-    '"categoria_en":"...","nome_en":"...","descrizione_en":"..."}\n\n' +
-    'Mantieni un registro appropriato per un ristorante raffinato di montagna. ' +
-    'Se la descrizione è vuota, metti stringa vuota.';
+    'Formato risposta (solo JSON, nient altro):\n' +
+    '{"categoria_fr":"...","nome_fr":"...","descrizione_fr":"...","categoria_en":"...","nome_en":"...","descrizione_en":"..."}\n\n' +
+    'Mantieni registro appropriato per ristorante raffinato di montagna. Se descrizione vuota metti stringa vuota.';
 
-  return fetch('https://lou-tchappe-proxy.netlify.app/.netlify/functions/translate', {
+  return fetch(CONFIG.PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 400,
@@ -144,18 +138,15 @@ function traduciPiatto(categoria, nome, descrizione) {
     })
   })
   .then(function (res) {
-    if (!res.ok) throw new Error('Errore API ' + res.status);
+    if (!res.ok) throw new Error('Errore proxy ' + res.status);
     return res.json();
   })
-    .then(function (data) {
-    console.log('Risposta traduzione:', JSON.stringify(data));
-    if (!data.content || !data.content[0]) {
-      throw new Error('Risposta API non valida: ' + JSON.stringify(data));
+  .then(function (data) {
+    if (!data || !data.content || !data.content[0] || !data.content[0].text) {
+      throw new Error('Risposta non valida');
     }
-    var testo = data.content[0].text.trim();
-    testo = testo.replace(/```json|```/g, '').trim();
+    var testo = data.content[0].text.trim().replace(/```json|```/g, '').trim();
     return JSON.parse(testo);
-  })
   })
   .catch(function (err) {
     console.warn('Traduzione fallita:', err);
@@ -165,6 +156,7 @@ function traduciPiatto(categoria, nome, descrizione) {
     };
   });
 }
+
 /* =========================================================
    PIATTI DEL GIORNO
    ========================================================= */
@@ -226,7 +218,7 @@ function salvaPiatto() {
   .then(function () {
     renderListaPiatti();
     resetFormPiatti();
-    mostraFeedback('feedback-piatti', eraModifica ? 'Piatto aggiornato ✓' : 'Piatto aggiunto ✓ (tradotto in FR e EN)', 'ok');
+    mostraFeedback('feedback-piatti', eraModifica ? 'Piatto aggiornato ✓' : 'Piatto aggiunto ✓ (tradotto FR/EN)', 'ok');
   })
   .catch(function () {
     mostraFeedback('feedback-piatti', 'Errore di salvataggio. Riprova.', 'err');
@@ -255,8 +247,8 @@ function renderListaPiatti() {
         '<div class="admin__piatto-nome">' + piatto.nome + '</div>' +
         '<div class="admin__piatto-desc">' + (piatto.descrizione || '') + '</div>' +
         '<div class="admin__piatto-desc" style="color:rgba(201,166,107,0.7);font-size:0.7rem;margin-top:0.2rem">' +
-          (piatto.nome_fr ? '🇫🇷 ' + piatto.nome_fr : '🇫🇷 —') + ' · ' +
-          (piatto.nome_en ? '🇬🇧 ' + piatto.nome_en : '🇬🇧 —') +
+          (piatto.nome_fr && piatto.nome_fr !== piatto.nome ? '🇫🇷 ' + piatto.nome_fr : '🇫🇷 —') + ' · ' +
+          (piatto.nome_en && piatto.nome_en !== piatto.nome ? '🇬🇧 ' + piatto.nome_en : '🇬🇧 —') +
         '</div>' +
         '<div class="admin__piatto-prezzo">€ ' + Number(piatto.prezzo).toFixed(2) + '</div>' +
       '</div>' +
