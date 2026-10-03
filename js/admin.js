@@ -124,7 +124,7 @@ function traduciPiatto(categoria, nome, descrizione) {
     'Categoria: ' + categoria + '\n' +
     'Nome: ' + nome + '\n' +
     'Descrizione: ' + (descrizione || '') + '\n\n' +
-    'Formato risposta (solo JSON, nient altro):\n' +
+        'Formato risposta (solo JSON):\n' +
     '{"categoria_fr":"...","nome_fr":"...","descrizione_fr":"...","categoria_en":"...","nome_en":"...","descrizione_en":"..."}\n\n' +
     'Mantieni registro appropriato per ristorante raffinato di montagna. Se descrizione vuota metti stringa vuota.';
 
