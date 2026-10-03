@@ -47,9 +47,14 @@
       <button class="admin__logout" id="logout-btn" title="Esci">✕</button>
     </header>
 
-    <!-- FORM AGGIUNGI / MODIFICA PIATTO -->
+    <!-- FORM -->
     <div class="admin__form-box" id="form-box-piatti">
       <h2 class="admin__form-titolo" id="form-titolo-piatti">Aggiungi Piatto</h2>
+
+      <!-- ITALIANO -->
+      <div class="admin__lang-section">
+        <span class="admin__lang-badge">🇮🇹 Italiano</span>
+      </div>
 
       <label class="admin__label">Categoria</label>
       <select class="admin__input" id="input-categoria">
@@ -61,11 +66,39 @@
         <option value="Speciale">Speciale</option>
       </select>
 
-      <label class="admin__label">Nome del piatto</label>
+      <label class="admin__label">Nome</label>
       <input type="text" class="admin__input" id="input-nome-piatto" placeholder="Es. Zuppa valpellinentze">
 
       <label class="admin__label">Descrizione</label>
-      <textarea class="admin__input admin__textarea" id="input-descrizione-piatto" placeholder="Breve descrizione del piatto" rows="3"></textarea>
+      <textarea class="admin__input admin__textarea" id="input-descrizione-piatto" placeholder="Breve descrizione" rows="2"></textarea>
+
+      <!-- FRANCESE -->
+      <div class="admin__lang-section">
+        <span class="admin__lang-badge">🇫🇷 Français</span>
+      </div>
+
+      <label class="admin__label">Catégorie</label>
+      <input type="text" class="admin__input" id="input-categoria-fr" placeholder="Es. Entrée">
+
+      <label class="admin__label">Nom</label>
+      <input type="text" class="admin__input" id="input-nome-fr" placeholder="Es. Soupe valpellinentze">
+
+      <label class="admin__label">Description</label>
+      <textarea class="admin__input admin__textarea" id="input-descrizione-fr" placeholder="Brève description" rows="2"></textarea>
+
+      <!-- INGLESE -->
+      <div class="admin__lang-section">
+        <span class="admin__lang-badge">🇬🇧 English</span>
+      </div>
+
+      <label class="admin__label">Category</label>
+      <input type="text" class="admin__input" id="input-categoria-en" placeholder="Es. Starter">
+
+      <label class="admin__label">Name</label>
+      <input type="text" class="admin__input" id="input-nome-en" placeholder="Es. Valpellinentze soup">
+
+      <label class="admin__label">Description</label>
+      <textarea class="admin__input admin__textarea" id="input-descrizione-en" placeholder="Brief description" rows="2"></textarea>
 
       <label class="admin__label">Prezzo (€)</label>
       <input type="number" class="admin__input" id="input-prezzo-piatto" placeholder="Es. 12" min="0" step="0.5">
