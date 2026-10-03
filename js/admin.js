@@ -137,12 +137,13 @@ function traduciPiatto(categoria, nome, descrizione) {
       messages: [{ role: 'user', content: prompt }]
     })
   })
-  .then(function (res) {
-    if (!res.ok) throw new Error('Errore proxy ' + res.status);
-    return res.json();
+   .then(function (res) {
+    console.log('Status proxy:', res.status);
+    return res.text();
   })
-  .then(function (data) {
-        console.log('Risposta proxy:', JSON.stringify(data));
+  .then(function (testo) {
+    console.log('Testo grezzo proxy:', testo);
+    var data = JSON.parse(testo);
     if (!data || !data.content || !data.content[0] || !data.content[0].text) {
       throw new Error('Risposta non valida: ' + JSON.stringify(data));
     }
