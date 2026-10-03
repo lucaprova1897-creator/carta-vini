@@ -44,7 +44,7 @@ a { text-decoration: none; color: inherit; }
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: url('bg-vini.jpg') center center / cover no-repeat;
+ background: url('../bg-vini.jpg') center center / cover no-repeat;
 }
 
 .sfondo-overlay {
